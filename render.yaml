@@ -29,6 +29,8 @@ services:
         value: llama-3.1-8b-instant
       - key: LLM_PROVIDER
         value: groq
+      - key: ENABLE_VECTOR_RETRIEVAL
+        value: "false"
       - key: QEHWA_MODEL_ID
         value: junaid008/qehwa-pashto-llm
       - key: QEHWA_DEVICE

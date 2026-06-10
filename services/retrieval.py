@@ -1,3 +1,4 @@
+import os
 import re
 
 from services.supabase_client import supabase
@@ -5,6 +6,10 @@ from services.embeddings import embed_text
 
 
 CHUNK_COLUMNS = "id, department_id, department_file_id, service_id, section_name, chunk_text, chunk_index"
+
+
+def vector_retrieval_enabled() -> bool:
+    return os.getenv("ENABLE_VECTOR_RETRIEVAL", "true").strip().lower() not in {"0", "false", "no", "off"}
 
 
 def normalize(text: str) -> str:
@@ -203,6 +208,12 @@ def search_chunks_debug(
     rows = load_chunks(department_id=department_id, service_id=service_id)
     keyword_limit = max(match_count * 4, 12)
     keyword_results = score_rows(rows=rows, query=query, limit=keyword_limit)
+
+    if not vector_retrieval_enabled():
+        return {
+            "mode": "keyword_only",
+            "chunks": expand_with_neighbors(ranked_chunks=keyword_results, rows=rows, limit=match_count),
+        }
 
     try:
         query_vector = embed_text(query)

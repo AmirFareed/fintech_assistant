@@ -43,6 +43,7 @@ Manual settings:
 ## Notes
 
 - For Render free tier, set `LLM_PROVIDER=groq` and provide `GROQ_API_KEY`. The local `qehwa` fallback is too heavy for a free 512 MB instance.
+- For Render free tier, set `ENABLE_VECTOR_RETRIEVAL=false`. This avoids loading the local embedding model in the web worker and uses keyword retrieval instead.
 - The `uploads/` folder is local filesystem storage. Render free web services do not persist local files across restarts or redeploys, so uploaded source files should be treated as temporary.
 - `/health` checks Supabase connectivity.
 - `/healthz` is a lightweight liveness endpoint for the host platform.
