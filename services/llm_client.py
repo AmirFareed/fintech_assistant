@@ -1,6 +1,5 @@
 import os
 
-import torch
 from dotenv import load_dotenv
 from groq import Groq
 
@@ -75,6 +74,13 @@ def _load_qehwa_runtime():
         return _qehwa_runtime
 
     try:
+        import torch
+    except ImportError as exc:
+        raise RuntimeError(
+            "Qehwa support requires `torch` to be installed."
+        ) from exc
+
+    try:
         from transformers import AutoModelForCausalLM, AutoTokenizer
     except ImportError as exc:
         raise RuntimeError(
@@ -103,6 +109,10 @@ def _get_model_input_device(model):
     try:
         return next(model.parameters()).device
     except StopIteration:
+        try:
+            import torch
+        except ImportError:
+            return "cpu"
         return torch.device("cpu")
 
 

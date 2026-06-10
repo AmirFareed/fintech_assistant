@@ -126,6 +126,11 @@ def health():
     return jsonify(status), code
 
 
+@app.route("/healthz")
+def healthz():
+    return jsonify({"status": "ok", "version": "2.0"}), 200
+
+
 # ── Public API (used by the widget) ──────────────────────────────────────────
 
 @app.route("/api/chat", methods=["POST", "OPTIONS"])
@@ -289,4 +294,5 @@ def forbidden_handler(e):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", "5000"))
+    app.run(host="0.0.0.0", port=port, debug=False)
