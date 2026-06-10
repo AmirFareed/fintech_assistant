@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinTech AI Assistant - Digital Payment Guide</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='fintech-logo.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='fintech-logo.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+<div class="app-shell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-wrap">
+                <img src="{{ url_for('static', filename='logo-wide.png') }}" alt="FinTech AI Assistant logo" class="brand-logo">
+            </div>
+            <div class="logo-text-wrap">
+                <span class="logo-tagline">Digital Payment Guide</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <p class="nav-label">Navigation</p>
+            <a href="#" class="nav-item active" data-view-target="assistant">
+                <span class="nav-icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                </span>
+                Assistant
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </span>
+                PSID Guide
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                </span>
+                Payment History
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+                </span>
+                Support
+            </a>
+        </nav>
+
+        <div class="sidebar-channels">
+            <p class="nav-label">Payment Channels</p>
+            <div class="channel-list">
+                <div class="channel-item">
+                    <span class="channel-icon ep">EP</span>
+                    <div class="channel-info">
+                        <span class="channel-name">Easypaisa</span>
+                        <span class="channel-tag">PSID Supported</span>
+                    </div>
+                </div>
+                <div class="channel-item">
+                    <span class="channel-icon jc">JC</span>
+                    <div class="channel-info">
+                        <span class="channel-name">JazzCash</span>
+                        <span class="channel-tag">PSID Supported</span>
+                    </div>
+                </div>
+                <div class="channel-item">
+                    <span class="channel-icon bk">BK</span>
+                    <div class="channel-info">
+                        <span class="channel-name">Other Banks</span>
+                        <span class="channel-tag">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-pill">
+                <div class="user-avatar-icon">U</div>
+                <div class="user-info">
+                    <span class="user-name">Guest User</span>
+                    <span class="user-role">Customer</span>
+                </div>
+                <div class="online-dot"></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Sidebar backdrop (mobile) -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Main Chat -->
+    <main class="chat-main">
+
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-menu-btn" id="menuBtn" aria-label="Toggle menu">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+                <div class="topbar-brand">
+                    <img src="{{ url_for('static', filename='fintech-logo.png') }}" alt="FinTech AI Assistant logo" class="topbar-logo">
+                    <div>
+                        <div class="topbar-title">FinTech AI Assistant</div>
+                        <div class="topbar-status">
+                            <span class="status-dot"></span>
+                            <span class="status-text">Online - PSID Digital Payments</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <button class="icon-btn theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+                    <span class="theme-icon theme-sun" aria-hidden="true">☀</span>
+                    <span class="theme-icon theme-moon" aria-hidden="true">☾</span>
+                </button>
+                <button class="icon-btn" id="clearBtn" title="New conversation">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Window -->
+        <section class="chat-window" id="chatWindow" aria-label="Conversation">
+
+            <section class="view-panel is-active" id="assistantView" data-view="assistant">
+            <!-- Welcome State -->
+            <div class="welcome-state" id="welcomeState">
+                <div class="welcome-glow"></div>
+
+                <div class="welcome-text">
+                    <h2>Welcome to FinTech AI Assistant!</h2>
+                    <p>Your dedicated guide for <strong>PSID-based digital payments</strong>. I can help you understand, generate, verify, and pay using your PSID through Easypaisa, JazzCash, or any bank.</p>
+                </div>
+
+                <div class="welcome-divider">
+                    <span>How may I help you today?</span>
+                </div>
+
+                <div class="question-grid">
+                    <button class="question-card" onclick="sendSuggestion(this)">
+                        <span class="q-icon">💡</span>
+                        <span class="q-text">What is PSID?</span>
+                    </button>
+                    <button class="question-card" onclick="sendSuggestion(this)">
+                        <span class="q-icon">🔄</span>
+                        <span class="q-text">How to generate PSID?</span>
+                    </button>
+                    <button class="question-card" onclick="sendSuggestion(this)">
+                        <span class="q-icon">✅</span>
+                        <span class="q-text">How to verify PSID?</span>
+                    </button>
+                    <button class="question-card" onclick="sendSuggestion(this)">
+                        <span class="q-icon">📱</span>
+                        <span class="q-text">How to make a digital payment through PSID?</span>
+                    </button>
+                    <button class="question-card" onclick="sendSuggestion(this)">
+                        <span class="q-icon">🟢</span>
+                        <span class="q-text">How to pay via Easypaisa using PSID?</span>
+                    </button>
+                    <button class="question-card" onclick="sendSuggestion(this)">
+                        <span class="q-icon">🔴</span>
+                        <span class="q-text">How to pay via JazzCash using PSID?</span>
+                    </button>
+                    <button class="question-card" onclick="sendSuggestion(this)">
+                        <span class="q-icon">🏦</span>
+                        <span class="q-text">What banks support PSID payment?</span>
+                    </button>
+                    <button class="question-card" onclick="sendSuggestion(this)">
+                        <span class="q-icon">🛡️</span>
+                        <span class="q-text">Is PSID payment secure?</span>
+                    </button>
+                    <button class="question-card" onclick="sendSuggestion(this)">
+                        <span class="q-icon">🆘</span>
+                        <span class="q-text">What if my PSID payment fails?</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages container -->
+            <div class="messages" id="messages"></div>
+            </section>
+
+        </section>
+
+        <!-- Input Area -->
+        <footer class="input-area" id="inputArea">
+            <div class="input-form">
+                <div class="input-wrapper" id="inputWrapper">
+                    <textarea
+                        id="user_query"
+                        rows="1"
+                        placeholder="Ask FinTech AI Assistant about PSID, digital payments, Easypaisa, JazzCash..."
+                        aria-label="Your message"
+                    ></textarea>
+                    <div class="lang-select-wrap" id="languageMenu">
+                        <span class="lang-select-icon" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <path d="M3 12h18"></path>
+                                <path d="M12 3a14 14 0 0 1 0 18"></path>
+                                <path d="M12 3a14 14 0 0 0 0 18"></path>
+                            </svg>
+                        </span>
+                        <button type="button" class="lang-select-trigger" id="languageSelect" aria-label="Select response language" aria-haspopup="true" aria-expanded="false">
+                            <span class="lang-select-value" id="languageSelectValue">English</span>
+                            <span class="lang-select-caret" aria-hidden="true">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m6 9 6 6 6-6"></path>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="lang-dropdown" id="languageDropdown" hidden>
+                            <button type="button" class="lang-option" data-language="en">English</button>
+                            <button type="button" class="lang-option" data-language="ur">Urdu</button>
+                            <button type="button" class="lang-option" data-language="ps">Pashto</button>
+                        </div>
+                    </div>
+                    <button type="button" class="voice-btn" id="voiceBtn" aria-label="Start voice input" title="Start voice input">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 1 1-6 0V6a3 3 0 0 1 3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <path d="M12 19v3"></path>
+                        </svg>
+                    </button>
+                    <button type="button" class="send-btn" id="sendBtn" aria-label="Send message">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+                <p class="voice-status" id="voiceStatus" hidden></p>
+                <p class="input-hint">FinTech AI Assistant - For PSID Digital Payment Guidance Only</p>
+            </div>
+        </footer>
+
+    </main>
+</div>
+
+<script>
+    marked.setOptions({ breaks: true, gfm: true });
+
+    const chatWindow  = document.getElementById('chatWindow');
+    const messagesEl  = document.getElementById('messages');
+    const welcomeEl   = document.getElementById('welcomeState');
+    const textarea    = document.getElementById('user_query');
+    const languageMenu = document.getElementById('languageMenu');
+    const languageSelect = document.getElementById('languageSelect');
+    const languageSelectValue = document.getElementById('languageSelectValue');
+    const languageDropdown = document.getElementById('languageDropdown');
+    const languageOptions = document.querySelectorAll('.lang-option');
+    const voiceBtn    = document.getElementById('voiceBtn');
+    const voiceStatus = document.getElementById('voiceStatus');
+    const sendBtn     = document.getElementById('sendBtn');
+    const clearBtn    = document.getElementById('clearBtn');
+    const themeToggle = document.getElementById('themeToggle');
+    const menuBtn     = document.getElementById('menuBtn');
+    const sidebar     = document.getElementById('sidebar');
+    const backdrop    = document.getElementById('sidebarBackdrop');
+
+    let isLoading        = false;
+    let welcomeHidden    = false;
+    let preferredLanguage = 'en';
+    let voiceRecognition = null;
+    let isListening      = false;
+    let transcriptBase   = '';
+    let voiceEndedWithError = false;
+
+    // ── Session & history ─────────────────────────────────────────────────────
+    let sessionId = sessionStorage.getItem('fintech-session-id');
+    if (!sessionId) {
+        sessionId = crypto.randomUUID();
+        sessionStorage.setItem('fintech-session-id', sessionId);
+    }
+    let conversationHistory = JSON.parse(sessionStorage.getItem('fintech-history') || '[]');
+
+    function saveHistory() {
+        sessionStorage.setItem('fintech-history', JSON.stringify(conversationHistory.slice(-10)));
+    }
+
+    function pushHistory(role, content) {
+        conversationHistory.push({ role, content });
+        if (conversationHistory.length > 10) conversationHistory = conversationHistory.slice(-10);
+        saveHistory();
+    }
+
+    function clearHistory() {
+        conversationHistory = [];
+        sessionStorage.removeItem('fintech-history');
+    }
+
+    function applyTheme(theme) {
+        const isDark = theme === 'dark';
+        document.body.classList.toggle('dark-mode', isDark);
+        localStorage.setItem('fintech-theme', isDark ? 'dark' : 'light');
+    }
+
+    applyTheme(localStorage.getItem('fintech-theme') || 'light');
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    function getTime() {
+        return new Date().toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function hideWelcome() {
+        if (!welcomeHidden) {
+            welcomeEl.style.display = 'none';
+            welcomeHidden = true;
+        }
+    }
+
+    function showWelcome() {
+        welcomeEl.style.display = '';
+        welcomeHidden = false;
+    }
+
+    function scrollToBottom() {
+        chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+    }
+
+    function autosizeTextarea() {
+        textarea.style.height = 'auto';
+        textarea.style.height = Math.min(textarea.scrollHeight, 140) + 'px';
+    }
+
+    const LANGUAGE_LABELS = {
+        en: 'English',
+        ur: 'Urdu',
+        ps: 'Pashto',
+    };
+
+    function updateLanguageSelect() {
+        languageSelectValue.textContent = LANGUAGE_LABELS[preferredLanguage] || 'English';
+        languageOptions.forEach(option => {
+            const isActive = option.dataset.language === preferredLanguage;
+            option.classList.toggle('is-active', isActive);
+            option.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+    }
+
+    function setLanguageMenuOpen(isOpen) {
+        languageMenu.classList.toggle('is-open', isOpen);
+        languageDropdown.hidden = !isOpen;
+        languageSelect.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    function isolateMixedDirectionText(root) {
+        if (!root) return;
+
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+            acceptNode(node) {
+                if (!node.nodeValue || !/[A-Za-z0-9]/.test(node.nodeValue)) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+                const parentTag = node.parentElement ? node.parentElement.tagName : '';
+                if (['SCRIPT', 'STYLE', 'CODE', 'PRE'].includes(parentTag)) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+                return NodeFilter.FILTER_ACCEPT;
+            }
+        });
+
+        const textNodes = [];
+        while (walker.nextNode()) {
+            textNodes.push(walker.currentNode);
+        }
+
+        const ltrPattern = /([A-Za-z0-9]+(?:[A-Za-z0-9./:-]*[A-Za-z0-9])?)/g;
+
+        textNodes.forEach(node => {
+            const text = node.nodeValue;
+            const fragment = document.createDocumentFragment();
+            let lastIndex = 0;
+            let match;
+
+            while ((match = ltrPattern.exec(text)) !== null) {
+                const [value] = match;
+                const start = match.index;
+
+                if (start > lastIndex) {
+                    fragment.appendChild(document.createTextNode(text.slice(lastIndex, start)));
+                }
+
+                const isolated = document.createElement('bdi');
+                isolated.className = 'ltr-term';
+                isolated.setAttribute('dir', 'ltr');
+                isolated.textContent = value;
+                fragment.appendChild(isolated);
+                lastIndex = start + value.length;
+            }
+
+            if (lastIndex === 0) return;
+
+            if (lastIndex < text.length) {
+                fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+            }
+
+            node.parentNode.replaceChild(fragment, node);
+        });
+    }
+
+    function intentLabel(intent) {
+        const map = {
+            greeting:            'Greeting',
+            psid_payment:        'PSID Payment',
+            easypaisa_payment:   'Easypaisa',
+            jazzcash_payment:    'JazzCash',
+            other_banks_payment: 'Other Banks',
+            psid_info:           'PSID Info',
+            psid_verify:         'PSID Verification',
+            psid_generate:       'PSID Generation',
+            general_help:        'General Help',
+        };
+        return map[intent] || intent;
+    }
+
+    // ── Append user message ───────────────────────────────────────────────────
+
+    function appendUserMessage(text) {
+        const div = document.createElement('div');
+        div.className = 'message user-message';
+        div.innerHTML = `
+            <div class="message-bubble user-bubble">${escapeHtml(text)}</div>
+            <div class="msg-avatar user-avatar-sm">You</div>
+        `;
+        messagesEl.appendChild(div);
+        scrollToBottom();
+    }
+
+    // ── Typing indicator ──────────────────────────────────────────────────────
+
+    function showTyping() {
+        const div = document.createElement('div');
+        div.className = 'message bot-message';
+        div.id = 'typingIndicator';
+        div.innerHTML = `
+            <img src="{{ url_for('static', filename='fintech-logo.png') }}" alt="FinTech AI Assistant logo" class="msg-avatar bot-avatar-sm">
+            <div class="message-bubble bot-bubble typing-bubble">
+                <span class="typing-dots"><span></span><span></span><span></span></span>
+            </div>
+        `;
+        messagesEl.appendChild(div);
+        scrollToBottom();
+    }
+
+    function removeTyping() {
+        const el = document.getElementById('typingIndicator');
+        if (el) el.remove();
+    }
+
+    // ── Payment option buttons ────────────────────────────────────────────────
+
+    function buildPaymentOptions(options) {
+        const wrap = document.createElement('div');
+        wrap.className = 'payment-options';
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'payment-opt-btn';
+            const icons = { 'Easypaisa': '🟢', 'JazzCash': '🔴', 'Other Banks': '🏦' };
+            btn.innerHTML = `<span class="opt-icon">${icons[opt] || '💳'}</span><span>${opt}</span>`;
+            btn.addEventListener('click', () => {
+                btn.closest('.payment-options').querySelectorAll('.payment-opt-btn')
+                   .forEach(b => b.disabled = true);
+                sendMessage(`How to pay via ${opt} using PSID?`);
+            });
+            wrap.appendChild(btn);
+        });
+        return wrap;
+    }
+
+    // ── Suggested questions ───────────────────────────────────────────────────
+
+    function buildSuggestedQuestions(questions, language) {
+        const wrap = document.createElement('div');
+        wrap.className = 'suggested-questions';
+        const label = document.createElement('p');
+        label.className = 'sq-label';
+        if (language === 'ps' || language === 'ur') label.classList.add('is-pashto');
+        label.textContent = 'Related questions:';
+        wrap.appendChild(label);
+        const chips = document.createElement('div');
+        chips.className = 'sq-chips';
+        questions.forEach(q => {
+            const btn = document.createElement('button');
+            btn.className = 'sq-chip';
+            if (language === 'ps' || language === 'ur') btn.classList.add('is-pashto');
+            btn.textContent = q;
+            if (language === 'ps' || language === 'ur') isolateMixedDirectionText(btn);
+            btn.addEventListener('click', () => sendMessage(q));
+            chips.appendChild(btn);
+        });
+        wrap.appendChild(chips);
+        return wrap;
+    }
+
+    // ── Feedback ──────────────────────────────────────────────────────────────
+
+    function buildFeedbackButtons(queryText, intent, service) {
+        const wrap = document.createElement('div');
+        wrap.className = 'feedback-row';
+
+        const label = document.createElement('span');
+        label.className = 'feedback-label';
+        label.textContent = 'Was this helpful?';
+        wrap.appendChild(label);
+
+        [{ rating: 1, emoji: '👍', label: 'Yes' }, { rating: -1, emoji: '👎', label: 'No' }].forEach(({ rating, emoji, label: btnLabel }) => {
+            const btn = document.createElement('button');
+            btn.className = 'feedback-btn';
+            btn.title = btnLabel;
+            btn.innerHTML = emoji;
+            btn.addEventListener('click', async () => {
+                if (wrap.dataset.voted) return;
+                wrap.dataset.voted = '1';
+                wrap.querySelectorAll('.feedback-btn').forEach(b => b.disabled = true);
+                btn.classList.add('active');
+
+                const thanks = document.createElement('span');
+                thanks.className = 'feedback-thanks';
+                thanks.textContent = rating === 1 ? 'Thanks for the feedback!' : "Sorry to hear that. We'll improve.";
+                wrap.appendChild(thanks);
+
+                try {
+                    await fetch('/api/feedback', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ rating, query_text: queryText, intent, service, session_id: sessionId }),
+                    });
+                } catch { /* silent */ }
+            });
+            wrap.appendChild(btn);
+        });
+        return wrap;
+    }
+
+    // ── Append bot message ────────────────────────────────────────────────────
+
+    function appendBotMessage(data, userQuery) {
+        const { answer, service, intent, suggested_questions, payment_options, response_language } = data;
+        const isRtlResponse = response_language === 'ps' || response_language === 'ur';
+        const bubbleClasses = `message-bubble bot-bubble markdown-body${isRtlResponse ? ' pashto-text' : ''}`;
+
+        const div = document.createElement('div');
+        div.className = 'message bot-message';
+
+        const badgeRow = (service || intent) ? `
+            <div class="meta-card">
+                ${service  ? `<span class="meta-tag service-tag">${service}</span>` : ''}
+                ${intent   ? `<span class="meta-tag intent-tag">${intentLabel(intent)}</span>` : ''}
+            </div>` : '';
+
+        div.innerHTML = `
+            <img src="{{ url_for('static', filename='fintech-logo.png') }}" alt="FinTech AI Assistant logo" class="msg-avatar bot-avatar-sm">
+            <div class="bot-content">
+                <div class="${bubbleClasses}">${marked.parse(answer)}</div>
+                ${badgeRow}
+                <div class="msg-time">${getTime()}</div>
+            </div>
+        `;
+        messagesEl.appendChild(div);
+
+        const botContent = div.querySelector('.bot-content');
+
+        if (payment_options && payment_options.length) {
+            botContent.appendChild(buildPaymentOptions(payment_options));
+        }
+
+        if (isRtlResponse) {
+            isolateMixedDirectionText(div.querySelector('.message-bubble'));
+        }
+
+        if (suggested_questions && suggested_questions.length) {
+            botContent.appendChild(buildSuggestedQuestions(suggested_questions, response_language));
+        }
+
+        if (intent !== 'greeting' && intent !== 'guard_rail') {
+            botContent.appendChild(buildFeedbackButtons(userQuery || '', intent, service));
+        }
+
+        scrollToBottom();
+    }
+
+    function appendErrorMessage(text) {
+        const div = document.createElement('div');
+        div.className = 'message bot-message';
+        div.innerHTML = `
+            <div class="msg-avatar bot-avatar-sm error-avatar">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="message-bubble bot-bubble error-bubble">${escapeHtml(text)}</div>
+        `;
+        messagesEl.appendChild(div);
+        scrollToBottom();
+    }
+
+    // ── Voice input ───────────────────────────────────────────────────────────
+
+    function setVoiceStatus(message, type = 'info') {
+        if (!message) {
+            voiceStatus.hidden = true;
+            voiceStatus.textContent = '';
+            voiceStatus.className = 'voice-status';
+            return;
+        }
+        voiceStatus.hidden = false;
+        voiceStatus.textContent = message;
+        voiceStatus.className = `voice-status is-${type}`;
+    }
+
+    function updateVoiceButton() {
+        voiceBtn.classList.toggle('is-listening', isListening);
+        voiceBtn.setAttribute('aria-pressed', isListening ? 'true' : 'false');
+        voiceBtn.setAttribute('aria-label', isListening ? 'Stop voice input' : 'Start voice input');
+        voiceBtn.title = isListening ? 'Stop voice input' : 'Start voice input';
+    }
+
+    function stopVoiceRecognition() {
+        if (voiceRecognition && isListening) voiceRecognition.stop();
+    }
+
+    function setupVoiceRecognition() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            voiceBtn.disabled = true;
+            setVoiceStatus('Voice input is not supported in this browser.', 'error');
+            return;
+        }
+
+        voiceRecognition = new SpeechRecognition();
+        voiceRecognition.lang = 'en-US';
+        voiceRecognition.interimResults = true;
+        voiceRecognition.continuous = false;
+
+        voiceRecognition.addEventListener('start', () => {
+            isListening = true;
+            transcriptBase = textarea.value ? `${textarea.value.trim()} ` : '';
+            voiceEndedWithError = false;
+            updateVoiceButton();
+            setVoiceStatus('Listening... speak now.', 'active');
+        });
+
+        voiceRecognition.addEventListener('result', (event) => {
+            let interimTranscript = '';
+            let finalTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) finalTranscript += transcript;
+                else interimTranscript += transcript;
+            }
+            textarea.value = `${transcriptBase}${finalTranscript}${interimTranscript}`.trim();
+            autosizeTextarea();
+        });
+
+        voiceRecognition.addEventListener('end', () => {
+            isListening = false;
+            transcriptBase = '';
+            updateVoiceButton();
+            if (voiceEndedWithError) { voiceEndedWithError = false; return; }
+            if (textarea.value.trim()) setVoiceStatus('Voice input added. Review or press send.', 'success');
+            else setVoiceStatus('');
+        });
+
+        voiceRecognition.addEventListener('error', (event) => {
+            isListening = false;
+            transcriptBase = '';
+            voiceEndedWithError = true;
+            updateVoiceButton();
+            const messages = {
+                'audio-capture':      'No microphone was detected.',
+                'network':            'Voice recognition failed because of a network error.',
+                'not-allowed':        'Microphone permission was denied.',
+                'service-not-allowed':'Microphone access is blocked in this browser.',
+                'no-speech':          'No speech was detected. Try again.',
+                'aborted':            'Voice input was cancelled.',
+            };
+            setVoiceStatus(messages[event.error] || 'Voice input failed. Try again.', 'error');
+        });
+
+        voiceBtn.addEventListener('click', () => {
+            if (isListening) { stopVoiceRecognition(); return; }
+            try { setVoiceStatus(''); voiceRecognition.start(); }
+            catch { setVoiceStatus('Voice input is already starting. Try again.', 'error'); }
+        });
+    }
+
+    // ── Core send ─────────────────────────────────────────────────────────────
+
+    async function sendMessage(queryOverride) {
+        const query = (queryOverride || textarea.value).trim();
+        if (!query || isLoading) return;
+
+        if (query.length > 500) {
+            appendErrorMessage('Message too long (max 500 characters). Please shorten your question.');
+            return;
+        }
+
+        stopVoiceRecognition();
+        isLoading = true;
+        sendBtn.classList.add('loading');
+        hideWelcome();
+        setVoiceStatus('');
+
+        if (!queryOverride) { textarea.value = ''; autosizeTextarea(); }
+
+        appendUserMessage(query);
+        showTyping();
+
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_query: query,
+                    preferred_language: preferredLanguage,
+                    history: conversationHistory.slice(),
+                    session_id: sessionId,
+                }),
+            });
+            const data = await res.json();
+            removeTyping();
+
+            if (data.error) {
+                appendErrorMessage('Error: ' + data.error);
+            } else {
+                appendBotMessage(data, query);
+                pushHistory('user', query);
+                pushHistory('assistant', data.answer || '');
+            }
+        } catch {
+            removeTyping();
+            appendErrorMessage('Connection error. Please try again.');
+        }
+
+        isLoading = false;
+        sendBtn.classList.remove('loading');
+        textarea.focus();
+    }
+
+    function sendSuggestion(btn) {
+        sendMessage(btn.querySelector('.q-text').textContent.trim());
+    }
+
+    // ── Event listeners ───────────────────────────────────────────────────────
+
+    sendBtn.addEventListener('click', () => sendMessage());
+
+    languageSelect.addEventListener('click', () => {
+        setLanguageMenuOpen(!languageMenu.classList.contains('is-open'));
+    });
+
+    languageOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            preferredLanguage = option.dataset.language;
+            updateLanguageSelect();
+            setLanguageMenuOpen(false);
+            textarea.focus();
+        });
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!languageMenu.contains(event.target)) setLanguageMenuOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') setLanguageMenuOpen(false);
+    });
+
+    textarea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+
+    textarea.addEventListener('input', autosizeTextarea);
+
+    clearBtn.addEventListener('click', () => {
+        stopVoiceRecognition();
+        messagesEl.innerHTML = '';
+        showWelcome();
+        textarea.value = '';
+        autosizeTextarea();
+        setVoiceStatus('');
+        clearHistory();
+        textarea.focus();
+    });
+
+    themeToggle.addEventListener('click', () => {
+        applyTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark');
+    });
+
+    menuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        backdrop.classList.toggle('visible');
+    });
+
+    backdrop.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        backdrop.classList.remove('visible');
+    });
+
+    setupVoiceRecognition();
+    updateVoiceButton();
+    updateLanguageSelect();
+    autosizeTextarea();
+    textarea.focus();
+</script>
+
+</body>
+</html>

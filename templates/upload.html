@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinTech AI Assistant - Upload Files</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='fintech-logo.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='fintech-logo.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='upload.css') }}">
+</head>
+<body>
+    <main class="upload-shell">
+        <section class="upload-card">
+            <div class="upload-brand">
+                <img src="{{ url_for('static', filename='fintech-logo.png') }}" alt="FinTech AI Assistant logo" class="upload-logo">
+                <div class="upload-brand-copy">
+                    <span class="upload-kicker">RAG File Manager</span>
+                    <h1>Upload Department File</h1>
+                    <p>Add a new source file for a department and ingest it into the knowledge base.</p>
+                </div>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="upload-form">
+                <div class="field-group">
+                    <label for="department_id">Department</label>
+                    <select name="department_id" id="department_id" required {% if not departments %}disabled{% endif %}>
+                        <option value="" selected disabled>Select a department</option>
+                        {% for department in departments %}
+                            <option value="{{ department.id }}">{{ department.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field-group">
+                    <label for="file">File</label>
+                    <input type="file" name="file" id="file" accept=".pdf,.txt,.docx" required>
+                    <p class="field-hint">Supported formats: PDF, TXT, DOCX</p>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" {% if not departments %}disabled{% endif %}>Upload and Ingest</button>
+                    <a href="{{ url_for('chat') }}" class="secondary-link">Back to Chat</a>
+                </div>
+            </form>
+
+            {% if department_error %}
+                <div class="status-box status-error">
+                    {{ department_error }}
+                </div>
+            {% endif %}
+
+            {% if message %}
+                <div class="status-box{% if message.startswith('Error:') %} status-error{% else %} status-success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

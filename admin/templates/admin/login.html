@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — FinTech</title>
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='fintech-logo.png') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body class="login-page">
+<div class="login-shell">
+  <div class="login-card">
+    <div class="login-brand">
+      <img src="{{ url_for('static', filename='fintech-logo.png') }}" alt="FinTech logo" class="login-logo">
+      <div>
+        <span class="login-brand-name">FinTech Admin</span>
+        <span class="login-brand-sub">Secure Access Only</span>
+      </div>
+    </div>
+
+    <h2 class="login-title">Sign in to Admin Panel</h2>
+    <p class="login-sub">Enter your credentials to access the dashboard.</p>
+
+    {% if error %}
+    <div class="login-error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" class="login-form">
+      <div class="login-field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="admin" required autocomplete="username">
+      </div>
+      <div class="login-field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="login-btn">Sign In</button>
+    </form>
+
+    <p class="login-hint">Set credentials via <code>ADMIN_USERNAME</code> and <code>ADMIN_PASSWORD</code> in your <code>.env</code> file.</p>
+  </div>
+</div>
+</body>
+</html>

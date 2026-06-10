@@ -1,0 +1,13 @@
+flask
+flask-limiter
+supabase
+python-dotenv
+pypdf
+python-docx
+tiktoken
+sentence-transformers
+torch
+numpy
+groq
+transformers
+accelerate

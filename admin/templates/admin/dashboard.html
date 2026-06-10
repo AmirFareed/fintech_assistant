@@ -1,0 +1,119 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-icon queries">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div class="stat-body">
+      <span class="stat-value">{{ stats.total_queries | default(0) }}</span>
+      <span class="stat-label">Total Queries</span>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon satisfaction">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+    </div>
+    <div class="stat-body">
+      <span class="stat-value">{{ stats.satisfaction_rate }}%</span>
+      <span class="stat-label">Satisfaction Rate</span>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon tokens">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div class="stat-body">
+      <span class="stat-value">{{ "{:,}".format(stats.total_tokens | default(0)) }}</span>
+      <span class="stat-label">Tokens Used</span>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon feedback">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/></svg>
+    </div>
+    <div class="stat-body">
+      <span class="stat-value">{{ stats.total_feedback }}</span>
+      <span class="stat-label">
+        Feedback &nbsp;
+        <span class="badge-pos">{{ stats.positive_feedback }}👍</span>
+        <span class="badge-neg">{{ stats.negative_feedback }}👎</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon no-result">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+    </div>
+    <div class="stat-body">
+      <span class="stat-value">{{ stats.no_result_count }}</span>
+      <span class="stat-label">No-Answer Queries</span>
+    </div>
+  </div>
+</div>
+
+<div class="dash-row">
+  <!-- Top intents -->
+  <div class="admin-card flex-1">
+    <h3 class="card-title">Top Intents</h3>
+    {% if stats.top_intents %}
+    <div class="intent-list">
+      {% set max_count = stats.top_intents[0][1] if stats.top_intents else 1 %}
+      {% for intent, count in stats.top_intents %}
+      <div class="intent-row">
+        <span class="intent-name">{{ intent }}</span>
+        <div class="intent-bar-wrap">
+          <div class="intent-bar" style="width: {{ (count / max_count * 100) | int }}%"></div>
+        </div>
+        <span class="intent-count">{{ count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">No query data yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Recent queries -->
+  <div class="admin-card flex-2">
+    <div class="card-title-row">
+      <h3 class="card-title">Recent Queries</h3>
+      <a href="{{ url_for('admin.queries') }}" class="card-link">View all →</a>
+    </div>
+    {% if stats.recent_queries %}
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr>
+          <th>Query</th><th>Intent</th><th>Result</th><th>Time</th>
+        </tr></thead>
+        <tbody>
+        {% for row in stats.recent_queries %}
+        <tr>
+          <td class="td-query">{{ row.query_text | truncate(60) }}</td>
+          <td><span class="intent-chip">{{ row.intent }}</span></td>
+          <td>
+            {% if row.had_result == True %}<span class="badge-found">Found</span>
+            {% elif row.had_result == False %}<span class="badge-not-found">Not Found</span>
+            {% else %}<span class="badge-unknown">—</span>{% endif %}
+          </td>
+          <td class="td-muted">{{ row.created_at[:16].replace('T', ' ') if row.created_at else '—' }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="empty-state">No recent queries.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

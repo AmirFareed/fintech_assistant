@@ -1,0 +1,92 @@
+{% extends "admin/base.html" %}
+{% block title %}Knowledge Base{% endblock %}
+{% block page_title %}Knowledge Base{% endblock %}
+
+{% block content %}
+
+<div class="dash-row">
+
+  <!-- Upload new file -->
+  <div class="admin-card" style="min-width:320px;max-width:400px">
+    <h3 class="card-title">Upload Document</h3>
+    <p class="card-sub">Add a new PDF, TXT, or DOCX to a department's knowledge base.</p>
+    <form id="kbUploadForm" class="kb-form">
+      <div class="login-field">
+        <label>Department</label>
+        <select name="department_id" required {% if not departments %}disabled{% endif %}>
+          <option value="" disabled selected>Select department</option>
+          {% for dept in departments %}
+          <option value="{{ dept.id }}">{{ dept.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="login-field">
+        <label>File</label>
+        <input type="file" name="file" accept=".pdf,.txt,.docx" required>
+        <span style="font-size:11px;color:#8a97ab;margin-top:4px;display:block">PDF, TXT, DOCX supported</span>
+      </div>
+      <button type="submit" class="login-btn" id="kbSubmitBtn">Upload &amp; Ingest</button>
+      <div id="kbStatus" style="margin-top:10px;font-size:13px;display:none"></div>
+    </form>
+  </div>
+
+  <!-- Existing files -->
+  <div class="admin-card flex-2">
+    <h3 class="card-title">Ingested Files</h3>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr>
+          <th>File</th><th>Department</th><th>Uploaded</th>
+        </tr></thead>
+        <tbody>
+        {% for f in files %}
+        <tr>
+          <td class="td-query">{{ f.original_file_name }}</td>
+          <td class="td-muted">{{ f.department_name }}</td>
+          <td class="td-muted">{{ f.created_at[:16].replace('T', ' ') if f.created_at else '—' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3" class="empty-state">No files ingested yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('kbUploadForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('kbSubmitBtn');
+  const status = document.getElementById('kbStatus');
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+  status.style.display = 'none';
+
+  try {
+    const res = await fetch('/api/upload', { method: 'POST', body: new FormData(this) });
+    const data = await res.json();
+    status.style.display = 'block';
+    if (data.error) {
+      status.style.color = '#b91c1c';
+      status.textContent = data.error;
+    } else {
+      status.style.color = '#15803d';
+      status.textContent = data.message || 'Uploaded successfully.';
+      this.reset();
+    }
+  } catch {
+    status.style.display = 'block';
+    status.style.color = '#b91c1c';
+    status.textContent = 'Connection error. Please try again.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Upload & Ingest';
+  }
+});
+</script>
+{% endblock %}

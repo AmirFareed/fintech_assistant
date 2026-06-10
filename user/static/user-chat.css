@@ -1,0 +1,1226 @@
+/* ─── Demo page ─────────────────────────────────────────────────────────── */
+.user-demo-page {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Inter", sans-serif;
+    color: #162033;
+    background:
+        radial-gradient(circle at top left, rgba(83, 137, 255, .14), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(37, 99, 235, .08), transparent 24%),
+        linear-gradient(180deg, #f7faff 0%, #edf3fb 100%);
+}
+
+.user-demo-shell {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 32px;
+}
+
+.user-demo-card {
+    width: min(680px, 100%);
+    padding: 36px;
+    border: 1px solid #d7e1ef;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 30px 80px rgba(20, 44, 92, .12);
+    backdrop-filter: blur(16px);
+}
+
+.user-demo-kicker {
+    margin: 0 0 10px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #2b5fd9;
+}
+
+.user-demo-card h1 {
+    margin: 0;
+    font-size: clamp(34px, 5vw, 54px);
+    line-height: 0.96;
+    letter-spacing: -0.06em;
+    color: #162033;
+}
+
+.user-demo-copy {
+    margin: 18px 0 0;
+    max-width: 54ch;
+    font-size: 16px;
+    line-height: 1.75;
+    color: #53627c;
+}
+
+.user-demo-points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.user-demo-points span {
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #eef4ff;
+    border: 1px solid #bfd0f7;
+    color: #1846b4;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.user-demo-points code {
+    font-family: "IBM Plex Mono", monospace;
+}
+
+/* ─── Widget root ───────────────────────────────────────────────────────── */
+.fintech-widget-root,
+.fintech-widget-root * {
+    box-sizing: border-box;
+}
+
+.fintech-widget-root {
+    /* Light theme tokens — matches main chatbot color system */
+    --fw-bg:            #edf3fb;
+    --fw-surface:       rgba(255, 255, 255, .94);
+    --fw-surface-soft:  #f5f8fc;
+    --fw-border:        #d7e1ef;
+    --fw-border-soft:   #e7edf5;
+    --fw-text:          #162033;
+    --fw-muted:         #53627c;
+    --fw-dim:           #8a97ab;
+    --fw-brand:         #2b5fd9;
+    --fw-brand-dark:    #1846b4;
+    --fw-brand-soft:    #eef4ff;
+    --fw-brand-border:  #bfd0f7;
+    --fw-brand-mid:     #4f7ef0;
+    --fw-accent:        #2563eb;
+    --fw-accent-soft:   rgba(37, 99, 235, .08);
+
+    --fw-user:          linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+    --fw-bot-bg:        rgba(255, 255, 255, .9);
+    --fw-bot-border:    #dce5f2;
+
+    --fw-panel-bg:
+        radial-gradient(circle at top right, rgba(83, 137, 255, .10), transparent 32%),
+        radial-gradient(circle at bottom left, rgba(43, 95, 217, .06), transparent 30%),
+        linear-gradient(180deg, #f7faff 0%, #edf3fb 100%);
+
+    --fw-header-bg:     rgba(255, 255, 255, .88);
+    --fw-header-border: rgba(30, 58, 138, .12);
+    --fw-input-bg:      rgba(255, 255, 255, .72);
+
+    --fw-launcher-bg:   linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    --fw-launcher-shadow: 0 22px 40px rgba(43, 95, 217, .32);
+    --fw-shadow:        0 28px 80px rgba(20, 44, 92, .18);
+    --fw-shadow-sm:     0 10px 30px rgba(29, 52, 97, .08);
+
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 9999;
+    font-family: "Inter", sans-serif;
+    pointer-events: none;
+    color: var(--fw-text);
+    transition: color 180ms ease;
+    will-change: left, top;
+}
+
+/* Dark mode overrides — matches main chatbot dark theme */
+.fintech-widget-root[data-theme="dark"] {
+    --fw-bg:            #0a1222;
+    --fw-surface:       rgba(15, 23, 42, .9);
+    --fw-surface-soft:  #152038;
+    --fw-border:        #23314b;
+    --fw-border-soft:   #1b2740;
+    --fw-text:          #e8eefb;
+    --fw-muted:         #b5c1d4;
+    --fw-dim:           #7f8ca3;
+    --fw-brand:         #6d9bff;
+    --fw-brand-dark:    #9dbaff;
+    --fw-brand-soft:    #152544;
+    --fw-brand-border:  #32548f;
+    --fw-brand-mid:     #84acff;
+    --fw-accent:        #3b82f6;
+    --fw-accent-soft:   rgba(109, 155, 255, .12);
+
+    --fw-user:          linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    --fw-bot-bg:        rgba(15, 23, 42, .92);
+    --fw-bot-border:    #2a3a59;
+
+    --fw-panel-bg:
+        radial-gradient(circle at top right, rgba(109, 155, 255, .14), transparent 32%),
+        radial-gradient(circle at bottom left, rgba(47, 84, 150, .10), transparent 30%),
+        linear-gradient(180deg, #09111f 0%, #07101e 100%);
+
+    --fw-header-bg:     rgba(9, 17, 31, .88);
+    --fw-header-border: rgba(50, 84, 143, .38);
+    --fw-input-bg:      rgba(17, 24, 39, .82);
+
+    --fw-launcher-bg:   linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+    --fw-launcher-shadow: 0 22px 40px rgba(0, 0, 0, .44);
+    --fw-shadow:        0 28px 90px rgba(0, 0, 0, .48);
+    --fw-shadow-sm:     0 10px 30px rgba(0, 0, 0, .22);
+}
+
+/* ─── Open / drag state ─────────────────────────────────────────────────── */
+.fintech-widget-root.is-movable .fw-launcher,
+.fintech-widget-root.is-movable .fw-brand {
+    cursor: grab;
+}
+
+.fintech-widget-root.is-dragging,
+.fintech-widget-root.is-dragging .fw-launcher,
+.fintech-widget-root.is-dragging .fw-brand {
+    cursor: grabbing;
+    user-select: none;
+}
+
+.fintech-widget-root[data-position="custom"] .fw-launcher {
+    box-shadow: 0 18px 34px rgba(43, 95, 217, .22);
+}
+
+.fintech-widget-root.is-open .fw-panel {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.fintech-widget-root.is-open .fw-launcher {
+    transform: translateY(0) scale(0.95);
+    box-shadow:
+        0 12px 24px rgba(43, 95, 217, .22),
+        0 0 0 1px rgba(255, 255, 255, .12) inset;
+}
+
+.fintech-widget-root.is-open .fw-launcher-online-dot {
+    animation: none;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, .22);
+}
+
+/* ─── Launcher button ───────────────────────────────────────────────────── */
+.fw-launcher {
+    margin-left: auto;
+    min-width: 58px;
+    height: 68px;
+    padding: 0 22px 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 999px;
+    background: var(--fw-launcher-bg);
+    color: #fff;
+    box-shadow:
+        var(--fw-launcher-shadow),
+        inset 0 0 0 1px rgba(255, 255, 255, .10),
+        inset 0 1px 0 rgba(255, 255, 255, .22);
+    backdrop-filter: blur(20px);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 220ms ease, filter 220ms ease;
+    touch-action: none;
+    position: relative;
+    overflow: visible;
+}
+
+/* Pulsing ring around launcher */
+.fw-launcher::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 999px;
+    border: 2px solid rgba(37, 99, 235, .35);
+    animation: fw-launcher-ring 2.8s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes fw-launcher-ring {
+    0%, 100% { transform: scale(1); opacity: .7; }
+    50%       { transform: scale(1.06); opacity: .25; }
+}
+
+.fw-launcher::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .18) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.fw-launcher:hover {
+    transform: translateY(-3px) scale(1.025);
+    box-shadow:
+        0 28px 52px rgba(43, 95, 217, .38),
+        inset 0 0 0 1px rgba(255, 255, 255, .14),
+        inset 0 1px 0 rgba(255, 255, 255, .28);
+    filter: saturate(1.08) brightness(1.04);
+}
+
+.fw-launcher-icon {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32), 0 6px 14px rgba(0, 0, 0, .18);
+    flex: 0 0 44px;
+    position: relative;
+    overflow: visible;
+}
+
+.fw-launcher-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, .55);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .22);
+    display: block;
+}
+
+.fw-launcher-online-dot {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #22c55e;
+    border: 2px solid #2563eb;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, .22);
+    animation: fw-online-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes fw-online-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, .5); }
+    50%       { box-shadow: 0 0 0 5px rgba(34, 197, 94, 0); }
+}
+
+.fw-launcher-text {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    line-height: 1;
+}
+
+.fw-launcher-label {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.fw-launcher-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0.9;
+    letter-spacing: 0.01em;
+}
+
+.fw-launcher-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    flex-shrink: 0;
+}
+
+.fw-launcher-subtitle {
+    font-size: 11px;
+    opacity: 0.88;
+    letter-spacing: 0.02em;
+}
+
+/* ─── Panel ─────────────────────────────────────────────────────────────── */
+.fw-panel {
+    position: absolute;
+    right: 0;
+    bottom: 84px;
+    width: clamp(360px, 28vw, 432px);
+    max-width: calc(100vw - 24px);
+    height: min(700px, calc(100vh - 108px));
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--fw-border);
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--fw-panel-bg);
+    box-shadow: var(--fw-shadow);
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+    transition: opacity 200ms ease, transform 200ms cubic-bezier(.2, .8, .4, 1);
+    pointer-events: none;
+    isolation: isolate;
+}
+
+/* Subtle inner border highlight */
+.fw-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, .72), rgba(191, 208, 247, .18));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.55;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+.fw-header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 16px 14px;
+    border-bottom: 1px solid var(--fw-header-border);
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.fw-header::before {
+    content: "";
+    position: absolute;
+    top: -28px;
+    right: -28px;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, .14) 0%, transparent 68%);
+    pointer-events: none;
+}
+
+.fw-header::after {
+    content: "";
+    position: absolute;
+    bottom: -40px;
+    left: -20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, .08) 0%, transparent 68%);
+    pointer-events: none;
+}
+
+.fw-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    z-index: 1;
+}
+
+.fw-brand {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    touch-action: none;
+    position: relative;
+    z-index: 1;
+}
+
+.fw-brand-logo {
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 2px solid rgba(255, 255, 255, .38);
+    background: rgba(255, 255, 255, .15);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .2);
+    flex-shrink: 0;
+}
+
+.fw-brand-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+}
+
+.fw-brand-title {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+}
+
+.fw-brand-subtitle {
+    margin-top: 3px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, .75);
+}
+
+.fw-brand-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 7px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .16);
+    border: 1px solid rgba(255, 255, 255, .22);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1;
+}
+
+.fw-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, .22);
+    animation: fw-status-pulse 2.5s ease infinite;
+}
+
+@keyframes fw-status-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: .55; }
+}
+
+.fw-icon-btn {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, .22);
+    border-radius: 11px;
+    background: rgba(255, 255, 255, .14);
+    color: rgba(255, 255, 255, .9);
+    cursor: pointer;
+    transition: background 180ms ease, transform 180ms ease, border-color 180ms ease;
+}
+
+.fw-icon-btn:hover {
+    background: rgba(255, 255, 255, .24);
+    border-color: rgba(255, 255, 255, .38);
+    transform: translateY(-1px);
+}
+
+/* ─── Body ───────────────────────────────────────────────────────────────── */
+.fw-body {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 14px;
+    overflow: hidden;
+}
+
+/* ─── Welcome section ────────────────────────────────────────────────────── */
+.fw-welcome {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 16px 12px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .9) 0%, rgba(245, 248, 252, .86) 100%);
+    border: 1px solid rgba(215, 225, 239, .96);
+    box-shadow: var(--fw-shadow-sm);
+    overflow: hidden;
+}
+
+.fintech-widget-root[data-theme="dark"] .fw-welcome {
+    background: linear-gradient(180deg, rgba(21, 32, 56, .92) 0%, rgba(17, 24, 39, .92) 100%);
+    border-color: var(--fw-border);
+}
+
+.fw-welcome::before {
+    content: "";
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37, 99, 235, .10) 0%, transparent 68%);
+    pointer-events: none;
+}
+
+.fw-welcome[hidden] {
+    display: none !important;
+}
+
+.fw-welcome h2 {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--fw-text);
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fw-welcome p {
+    margin: 6px 0 0;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--fw-muted);
+    max-width: 36ch;
+}
+
+.fw-welcome-divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.fw-welcome-divider::before,
+.fw-welcome-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--fw-border);
+}
+
+.fw-welcome-divider span {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--fw-dim);
+    white-space: nowrap;
+}
+
+/* ─── Suggestion grid — matches main chatbot question-card ──────────────── */
+.fw-suggestion-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    flex: 1;
+    min-height: 0;
+    gap: 8px;
+    margin-top: 10px;
+    overflow-y: auto;
+    padding-right: 2px;
+    scrollbar-width: thin;
+    scrollbar-color: #7b8ba6 #dbe4f0;
+    align-content: start;
+}
+
+.fw-suggestion-grid::-webkit-scrollbar { width: 6px; }
+.fw-suggestion-grid::-webkit-scrollbar-track { background: #dbe4f0; border-radius: 999px; }
+.fw-suggestion-grid::-webkit-scrollbar-thumb { background: #7b8ba6; border-radius: 999px; }
+
+.fw-suggestion {
+    padding: 11px 12px 11px 14px;
+    border: 1px solid rgba(215, 225, 239, .96);
+    border-left: 3px solid var(--fw-brand-border);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .9) 0%, rgba(245, 248, 252, .86) 100%);
+    color: var(--fw-muted);
+    font-size: 11px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: all 180ms cubic-bezier(.4, 0, .2, 1);
+    position: relative;
+    overflow: hidden;
+    line-height: 1.4;
+    min-height: 58px;
+    box-shadow: var(--fw-shadow-sm);
+}
+
+.fintech-widget-root[data-theme="dark"] .fw-suggestion {
+    background: linear-gradient(180deg, rgba(21, 32, 56, .92) 0%, rgba(17, 24, 39, .92) 100%);
+    border-color: var(--fw-border);
+    color: var(--fw-muted);
+}
+
+.fw-suggestion:hover {
+    border-color: var(--fw-brand-border);
+    background: linear-gradient(180deg, rgba(238, 244, 255, .96) 0%, rgba(221, 233, 255, .74) 100%);
+    color: var(--fw-brand-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(43, 95, 217, .12);
+}
+
+.fintech-widget-root[data-theme="dark"] .fw-suggestion:hover {
+    background: linear-gradient(180deg, rgba(24, 39, 74, .96) 0%, rgba(20, 33, 61, .96) 100%);
+    border-color: var(--fw-brand-border);
+    color: var(--fw-brand-dark);
+}
+
+/* ─── Messages ───────────────────────────────────────────────────────────── */
+.fw-messages {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-right: 2px;
+    scrollbar-width: thin;
+    scrollbar-color: #7b8ba6 #dbe4f0;
+}
+
+.fw-messages:empty { display: none; }
+
+.fw-messages::-webkit-scrollbar { width: 8px; }
+.fw-messages::-webkit-scrollbar-track { background: #dbe4f0; border-radius: 999px; }
+.fw-messages::-webkit-scrollbar-thumb { background: #7b8ba6; border-radius: 999px; border: 2px solid #dbe4f0; }
+.fw-messages::-webkit-scrollbar-thumb:hover { background: #5a6e91; }
+
+.fw-message {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    animation: fw-msg-in .2s cubic-bezier(.2, .8, .4, 1);
+}
+
+@keyframes fw-msg-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.fw-message.is-user  { justify-content: flex-end; }
+.fw-message.is-bot   { justify-content: flex-start; }
+
+/* User bubble — matches main chatbot user-bubble */
+.fw-message.is-user .fw-bubble {
+    background: var(--fw-user);
+    color: #f9fbff;
+    border-bottom-right-radius: 6px;
+    box-shadow: 0 14px 24px rgba(37, 99, 235, .2);
+    border: none;
+}
+
+/* Bot bubble — matches main chatbot bot-bubble */
+.fw-message.is-bot .fw-bubble {
+    background: var(--fw-bot-bg);
+    color: var(--fw-text);
+    border: 1px solid var(--fw-bot-border);
+    border-bottom-left-radius: 6px;
+    box-shadow: var(--fw-shadow-sm);
+    backdrop-filter: blur(8px);
+}
+
+.fw-message.is-system .fw-bubble {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    border-radius: 14px;
+}
+
+.fintech-widget-root[data-theme="dark"] .fw-message.is-system .fw-bubble {
+    background: rgba(69, 10, 10, .58);
+    border-color: rgba(248, 113, 113, .22);
+    color: #fca5a5;
+}
+
+.fw-avatar {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--fw-brand-soft), var(--fw-brand-border));
+    border: 1.5px solid var(--fw-brand-border);
+    box-shadow: 0 4px 10px rgba(43, 95, 217, .12);
+}
+
+.fw-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.fw-bubble-wrap {
+    max-width: 84%;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.fw-bubble {
+    padding: 12px 14px;
+    border-radius: 18px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.fw-bubble[dir="rtl"] { text-align: right; }
+.fw-bubble p { margin: 0; }
+
+/* ─── Badges ─────────────────────────────────────────────────────────────── */
+.fw-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.fw-badge {
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: var(--fw-brand-soft);
+    border: 1px solid var(--fw-brand-border);
+    color: var(--fw-brand-dark);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* ─── Inline suggestions — matches main chatbot sq-chip ─────────────────── */
+.fw-inline-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.fw-inline-suggestion {
+    padding: 6px 11px;
+    border: 1px solid var(--fw-border);
+    border-radius: 100px;
+    background: var(--fw-surface);
+    color: var(--fw-muted);
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 180ms cubic-bezier(.4, 0, .2, 1);
+}
+
+.fw-inline-suggestion:hover {
+    background: var(--fw-brand-soft);
+    border-color: var(--fw-brand-border);
+    color: var(--fw-brand-dark);
+}
+
+/* ─── Typing indicator ───────────────────────────────────────────────────── */
+.fw-typing {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    padding: 2px 0;
+}
+
+.fw-typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--fw-dim);
+    animation: fw-typing-bounce 1.2s ease infinite;
+}
+
+.fw-typing span:nth-child(2) { animation-delay: .18s; }
+.fw-typing span:nth-child(3) { animation-delay: .36s; }
+
+@keyframes fw-typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: .5; }
+    30%            { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ─── Footer / input area — matches main chatbot input-area ─────────────── */
+.fw-footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--fw-border);
+    padding: 12px 14px 14px;
+    background: rgba(255, 255, 255, .76);
+    backdrop-filter: blur(16px);
+    flex-shrink: 0;
+}
+
+.fintech-widget-root[data-theme="dark"] .fw-footer {
+    background: rgba(10, 18, 34, .76);
+}
+
+.fw-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* Language selector — matches main chatbot lang-select-wrap */
+.fw-language-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 12px 0 8px;
+    background: linear-gradient(135deg, rgba(43, 95, 217, .10) 0%, rgba(124, 58, 237, .08) 100%);
+    color: var(--fw-brand-dark);
+    border: 1px solid rgba(191, 208, 247, .95);
+    border-radius: 14px;
+    box-shadow: 0 8px 18px rgba(43, 95, 217, .10), inset 0 1px 0 rgba(255, 255, 255, .55);
+    cursor: pointer;
+    transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.fw-language-wrap:hover {
+    background: linear-gradient(135deg, rgba(43, 95, 217, .14) 0%, rgba(99, 102, 241, .12) 100%);
+    border-color: rgba(144, 168, 245, .95);
+    transform: translateY(-1px);
+}
+
+.fintech-widget-root[data-theme="dark"] .fw-language-wrap {
+    background: linear-gradient(135deg, rgba(109, 155, 255, .16) 0%, rgba(71, 85, 161, .18) 100%);
+    border-color: rgba(80, 111, 173, .9);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, .18), inset 0 1px 0 rgba(255, 255, 255, .04);
+}
+
+.fw-language-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: linear-gradient(135deg, var(--fw-brand) 0%, var(--fw-brand-mid) 100%);
+    box-shadow: 0 6px 14px rgba(43, 95, 217, .22);
+    flex-shrink: 0;
+}
+
+.fw-language-select {
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--fw-text);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    outline: none;
+    cursor: pointer;
+    min-width: 62px;
+}
+
+.fintech-widget-root[data-theme="dark"] .fw-language-select {
+    color: var(--fw-text);
+}
+
+/* Input row — matches main chatbot input-wrapper */
+.fw-input-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    background: var(--fw-input-bg);
+    border: 1.5px solid var(--fw-border);
+    border-radius: 20px;
+    padding: 10px 10px 10px 14px;
+    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.fintech-widget-root[data-theme="dark"] .fw-input-row {
+    background: rgba(17, 24, 39, .82);
+}
+
+.fw-input-row:focus-within {
+    border-color: var(--fw-brand-border);
+    background: var(--fw-surface);
+    box-shadow: 0 0 0 3px rgba(43, 95, 217, .08);
+}
+
+.fw-input {
+    flex: 1;
+    min-height: 28px;
+    max-height: 110px;
+    border: none;
+    resize: none;
+    background: transparent;
+    color: var(--fw-text);
+    font: inherit;
+    font-size: 13.5px;
+    line-height: 1.6;
+    outline: none;
+    padding: 2px 0;
+    overflow-y: auto;
+}
+
+.fw-input::placeholder { color: var(--fw-dim); }
+
+/* Voice button — matches main chatbot voice-btn */
+.fw-voice {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(191, 208, 247, .9);
+    border-radius: 13px;
+    background: rgba(43, 95, 217, .08);
+    color: var(--fw-brand-dark);
+    cursor: pointer;
+    transition: background 180ms ease, transform 180ms ease, border-color 180ms ease;
+}
+
+.fw-voice:hover {
+    background: rgba(43, 95, 217, .14);
+    transform: translateY(-1px);
+}
+
+.fw-voice:disabled { opacity: .55; cursor: not-allowed; }
+
+.fw-voice.is-listening {
+    background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+    color: #fff;
+    border-color: rgba(248, 113, 113, .65);
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, .12);
+    animation: fw-voice-pulse 1.4s ease infinite;
+}
+
+@keyframes fw-voice-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, .18); }
+    50%       { box-shadow: 0 0 0 8px rgba(239, 68, 68, .08); }
+}
+
+/* Send button — matches main chatbot send-btn */
+.fw-send {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 13px;
+    background: var(--fw-brand);
+    color: #fff;
+    box-shadow: 0 10px 18px rgba(43, 95, 217, .24);
+    cursor: pointer;
+    transition: background 180ms ease, transform 180ms ease;
+}
+
+.fw-send:hover {
+    background: var(--fw-brand-dark);
+    transform: translateY(-1px);
+}
+
+.fw-send:active, .fw-voice:active {
+    transform: scale(0.93);
+}
+
+.fw-send:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+.fw-voice-status {
+    min-height: 16px;
+    margin: 8px 2px 0;
+    font-size: 11px;
+    color: var(--fw-dim);
+    padding: 0 2px;
+}
+
+.fw-voice-status[hidden]   { display: none; }
+.fw-voice-status.is-active { color: var(--fw-brand-dark); }
+.fw-voice-status.is-success{ color: #15803d; }
+.fw-voice-status.is-error  { color: #b91c1c; }
+
+/* ─── Widget footer branding ─────────────────────────────────────────────── */
+.fw-footer-brand {
+    text-align: center;
+    font-size: 10px;
+    color: var(--fw-dim);
+    margin-top: 8px;
+    letter-spacing: 0.02em;
+}
+.fw-footer-brand a { color: var(--fw-brand); text-decoration: none; font-weight: 600; }
+
+/* ─── Feedback in widget ─────────────────────────────────────────────────── */
+.fw-feedback-row {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 6px; flex-wrap: wrap;
+    animation: fw-fade-up .22s ease;
+}
+@keyframes fw-fade-up {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: none; }
+}
+.fw-feedback-label { font-size: 10.5px; color: var(--fw-dim); }
+.fw-feedback-btn {
+    width: 28px; height: 28px; border-radius: 8px;
+    border: 1px solid var(--fw-border); background: var(--fw-surface);
+    font-size: 13px; display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: transform 150ms, background 150ms;
+}
+.fw-feedback-btn:hover   { transform: translateY(-2px); background: var(--fw-brand-soft); border-color: var(--fw-brand-border); }
+.fw-feedback-btn:disabled{ opacity: .55; cursor: not-allowed; transform: none; }
+.fw-feedback-btn.active  { background: var(--fw-brand-soft); border-color: var(--fw-brand-border); }
+.fw-feedback-thanks { font-size: 10.5px; color: var(--fw-brand); font-weight: 600; }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+
+/* Safe-area inset support (notched iPhones, Android nav bars) */
+@supports (bottom: env(safe-area-inset-bottom)) {
+    .fintech-widget-root {
+        bottom: calc(24px + env(safe-area-inset-bottom));
+    }
+}
+
+@media (max-width: 1100px) {
+    .fw-panel {
+        width: min(410px, calc(100vw - 24px));
+        height: min(680px, calc(100vh - 96px));
+    }
+}
+
+@media (max-width: 860px) {
+    .fw-panel {
+        width: min(392px, calc(100vw - 20px));
+        height: min(660px, calc(100vh - 88px));
+        bottom: 80px;
+    }
+
+    .fw-header { padding: 14px 14px 12px; }
+    .fw-body   { padding: 12px; gap: 10px; }
+    .fw-footer { padding: 10px 12px 12px; }
+}
+
+/* ── Phones (portrait) ───────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .user-demo-shell { padding: 18px; align-items: flex-start; }
+    .user-demo-card  { padding: 24px; border-radius: 20px; }
+
+    .fintech-widget-root {
+        right: 12px;
+        left: 12px;
+        bottom: 16px;
+        will-change: auto;
+    }
+
+    @supports (bottom: env(safe-area-inset-bottom)) {
+        .fintech-widget-root {
+            bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+    }
+
+    .fw-panel {
+        width: 100%;
+        max-width: none;
+        right: 0;
+        left: 0;
+        bottom: 76px;
+        /* dvh keeps the panel inside the visual viewport when keyboard opens */
+        height: min(78dvh, 78vh, 620px);
+        border-radius: 20px;
+    }
+
+    .fw-launcher {
+        height: 60px;
+        padding: 0 16px 0 10px;
+        /* Ensure launcher stays above iOS home bar */
+        margin-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .fw-launcher-icon { width: 40px; height: 40px; flex-basis: 40px; }
+    .fw-launcher-logo { width: 32px; height: 32px; }
+
+    /* Suggestion grid: single column on phones */
+    .fw-suggestion-grid { grid-template-columns: 1fr; }
+    .fw-bubble-wrap { max-width: 90%; }
+
+    /* Bump touch targets to 44 px minimum (Apple HIG / WCAG 2.5.5) */
+    .fw-voice,
+    .fw-send {
+        width: 44px;
+        height: 44px;
+        flex-basis: 44px;
+        border-radius: 14px;
+    }
+
+    .fw-icon-btn { width: 40px; height: 40px; border-radius: 12px; }
+
+    .fw-suggestion { min-height: 52px; }
+}
+
+/* ── Small phones (≤ 420 px wide) ─────────────────────────────────────────── */
+@media (max-width: 420px) {
+    .fintech-widget-root { right: 8px; left: 8px; bottom: 12px; }
+
+    @supports (bottom: env(safe-area-inset-bottom)) {
+        .fintech-widget-root {
+            bottom: calc(12px + env(safe-area-inset-bottom));
+        }
+    }
+
+    .fw-panel {
+        bottom: 70px;
+        height: min(80dvh, 80vh, 600px);
+        border-radius: 18px;
+    }
+
+    .fw-header      { gap: 8px; padding: 12px 12px 10px; }
+    .fw-brand       { gap: 10px; }
+    .fw-brand-logo  { width: 40px; height: 40px; border-radius: 12px; }
+    .fw-brand-title { font-size: 14px; }
+    .fw-brand-status{ margin-top: 6px; padding: 3px 8px; font-size: 10px; }
+    .fw-body        { padding: 10px; }
+    .fw-footer      { padding: 10px 12px 12px; }
+    .fw-toolbar     { margin-bottom: 8px; }
+    .fw-input       { font-size: 13px; }
+}
+
+/* ── Landscape phones — slim panel, horizontal layout ─────────────────────── */
+@media (max-height: 500px) and (max-width: 900px) {
+    .fintech-widget-root { bottom: 10px; right: 10px; left: auto; }
+
+    .fw-launcher { height: 52px; gap: 10px; padding: 0 14px 0 8px; }
+    .fw-launcher-icon { width: 36px; height: 36px; flex-basis: 36px; }
+    .fw-launcher-logo { width: 28px; height: 28px; }
+
+    .fw-panel {
+        /* Landscape: wide but short */
+        right: 0;
+        left: auto;
+        width: min(420px, calc(100vw - 16px));
+        bottom: 64px;
+        height: min(72dvh, 72vh, 360px);
+        border-radius: 18px;
+    }
+
+    .fw-header { padding: 10px 14px 10px; }
+
+    .fw-brand-status { display: none; }
+
+    .fw-body { padding: 10px; gap: 8px; }
+
+    .fw-welcome h2  { font-size: 13px; }
+    .fw-welcome p   { display: none; }
+
+    .fw-suggestion-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 6px;
+    }
+
+    .fw-suggestion { min-height: 46px; font-size: 10.5px; padding: 8px 10px; }
+
+    .fw-footer { padding: 8px 12px 10px; }
+    .fw-toolbar { margin-bottom: 6px; }
+    .fw-input   { min-height: 24px; }
+}
