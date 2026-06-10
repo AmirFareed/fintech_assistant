@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: fintech-assistant
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SUPABASE_BUCKET
+        value: rag-files
+      - key: SUPABASE_TIMEOUT_SECONDS
+        value: "5"
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.1-8b-instant
+      - key: LLM_PROVIDER
+        value: groq
+      - key: QEHWA_MODEL_ID
+        value: junaid008/qehwa-pashto-llm
+      - key: QEHWA_DEVICE
+        value: cpu
+      - key: QEHWA_MAX_NEW_TOKENS
+        value: "300"
+      - key: QEHWA_TEMPERATURE
+        value: "0.3"
+      - key: WIDGET_ALLOWED_ORIGINS
+        value: "*"
