@@ -1,23 +1,44 @@
 === Service Start ===
 Service Name: Other Banks PSID Payment
 
-Banks that support PSID payments:
-- HBL (Habib Bank Limited) - via HBL Mobile App and Internet Banking
-- UBL (United Bank Limited) - via UBL Digital App
-- MCB Bank - via MCB Mobile App
-- Bank Alfalah - via Alfalah Mobile App
-- Meezan Bank - via Meezan Mobile Banking
-- Allied Bank - via ABL Mobile App
-- Standard Chartered - via SC Mobile App
-- Askari Bank - via Askari Mobile Banking
-- Bank of Punjab - via BOP Smart Banking
-- Faysal Bank - via Faysal Digibank
+Banks that support PSID-based payments include:
+* Askari Bank
+* Bank Alfalah
+* Meezan Bank
+* National Bank of Pakistan
+* FINCA Microfinance Bank
+* HabibMetro Bank
+* ICBC Pakistan
+* Soneri Bank
+* JS Bank
+* MCB Bank
+* UBL
+* HBL
+* Allied Bank
+* Dubai Islamic Bank
+* Telenor Microfinance Bank / Easypaisa
+* Summit Bank
+* Bank of Punjab
+* Sindh Bank
+* NRSP Microfinance Bank
+* Bank Al Habib
+* APNA Microfinance Bank
+* Bank of Khyber
+* Faysal Bank
+* MCB Islamic Bank
+* Al Baraka Bank
+* Silk Bank
+* BankIslami
+* Samba Bank
+* Standard Chartered Bank
+* Mobilink Microfinance Bank / JazzCash
+* First Women Bank
 
 General Steps for Most Banks (Internet Banking):
 1. Log in to your bank’s internet banking portal, microfinance wallet, or mobile banking app.
 2. Go to “Bill Payments,” “1LINK Payments,” or “PSID Payment.”
 3. Select “1 Bill” or “Invoice/Voucher” as the payment type.
-4. Enter your 24-digit PSID.
+4. Enter your 17-digit PSID.
 5. Review the details (institution, amount, due date) carefully.
 6. Confirm the payment using your PIN or OTP.
 7. Save or take a screenshot of the receipt/confirmation for your records.

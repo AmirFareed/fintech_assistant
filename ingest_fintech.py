@@ -14,7 +14,7 @@ FILES = [
     "psid_info.txt",
     "easypaisa_jazzcash.txt",
     "other_banks.txt",
-    "irrelevant_questions.txt",
+    "other_questions.txt",
 ]
 
 def main():

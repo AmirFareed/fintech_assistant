@@ -1,7 +1,7 @@
 import os
 from functools import wraps
 
-from flask import render_template, request, redirect, url_for, session
+from flask import render_template, request, redirect, url_for, session, jsonify
 from admin import admin_bp
 from services.supabase_client import supabase
 
@@ -209,12 +209,40 @@ def knowledge():
     except Exception:
         pass
     try:
-        files = (supabase.table("department_files")
-                 .select("id, original_file_name, created_at, department_id")
-                 .order("created_at", desc=True).limit(50).execute().data or [])
+        resp = supabase.table("department_files").select("id, file_name, department_id, uploaded_at").limit(50).execute()
+        files = resp.data or []
         dept_map = {d["id"]: d["name"] for d in departments}
         for f in files:
             f["department_name"] = dept_map.get(f.get("department_id"), "—")
-    except Exception:
-        pass
+            f["original_file_name"] = f.get("file_name", "—")
+            f["created_at"] = f.get("uploaded_at")
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        print(f"[KB ERROR] {e}")
     return render_template("admin/knowledge.html", departments=departments, files=files)
+
+
+@admin_bp.route("/api/delete-file/<file_id>", methods=["DELETE"])
+@login_required
+def delete_file(file_id):
+    try:
+        # Get storage_path before deleting the record
+        rec = supabase.table("department_files").select("storage_path").eq("id", file_id).single().execute()
+        storage_path = rec.data.get("storage_path") if rec.data else None
+
+        # Delete associated chunks first
+        supabase.table("chunks").delete().eq("department_file_id", file_id).execute()
+
+        # Delete the department_files record
+        supabase.table("department_files").delete().eq("id", file_id).execute()
+
+        # Delete from storage bucket (best-effort)
+        if storage_path:
+            try:
+                supabase.storage.from_("documents").remove([storage_path])
+            except Exception:
+                pass
+
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

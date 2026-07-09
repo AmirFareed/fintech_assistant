@@ -81,7 +81,7 @@ def is_injection_attempt(query: str) -> bool:
 def generate_greeting_response(language: str = "en") -> str:
     if language == "ps":
         return (
-            "السلام علیکم! **FinTech AI Assistant** ته ښه راغلاست.\n\n"
+            "السلام علیکم! **Paymir AI Assistant** ته ښه راغلاست.\n\n"
             "زه په پاکستان کې د **PSID-based digital payments** لپاره ستاسو مرستندوی یم.\n\n"
             "زه له تاسو سره په دې برخو کې مرسته کولی شم:\n"
             "- د PSID په اړه معلومات\n"
@@ -94,7 +94,7 @@ def generate_greeting_response(language: str = "en") -> str:
 
     if language == "ur":
         return (
-            "السلام علیکم! **FinTech AI Assistant** میں خوش آمدید۔\n\n"
+            "السلام علیکم! **Paymir AI Assistant** میں خوش آمدید۔\n\n"
             "میں پاکستان میں **PSID-based digital payments** کے بارے میں آپ کی رہنمائی کے لیے حاضر ہوں۔\n\n"
             "میں ان معاملات میں آپ کی مدد کر سکتا ہوں:\n"
             "- PSID کیا ہے\n"
@@ -106,7 +106,7 @@ def generate_greeting_response(language: str = "en") -> str:
         )
 
     return (
-        "Hello! Welcome to **FinTech AI Assistant**.\n\n"
+        "Hello! Welcome to **Paymir AI Assistant**.\n\n"
         "I'm your dedicated guide for **PSID-based digital payments** in Pakistan.\n\n"
         "Here's what I can help you with:\n"
         "- Understanding what PSID is\n"
@@ -206,7 +206,7 @@ def generate_chat_response(
         else "English"
     )
 
-    system_prompt = f"""You are FinTech AI Assistant, a helpful chatbot specializing in PSID-based digital payments in Pakistan.
+    system_prompt = f"""You are Paymir AI Assistant, a helpful chatbot specializing in PSID-based digital payments in Pakistan.
 
 Your role:
 - Answer only questions related to PSID, digital payments, Easypaisa, JazzCash, and online banking

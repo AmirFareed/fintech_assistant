@@ -110,8 +110,7 @@ def process_department_upload(department_id, file):
 
 @app.route("/")
 def home():
-    # Root always goes to the user panel
-    return redirect(url_for("user_widget.user_widget_demo"))
+    return render_template("user/demo.html")
 
 
 @app.route("/health")
@@ -132,6 +131,51 @@ def healthz():
 
 
 # ── Public API (used by the widget) ──────────────────────────────────────────
+
+SUGGESTIONS = {
+    "en": [
+        "What is PSID?",
+        "How to generate PSID?",
+        "How to verify PSID?",
+        "How to make a digital payment through PSID?",
+        "How to pay via Easypaisa using PSID?",
+        "How to pay via JazzCash using PSID?",
+        "What banks support PSID payment?",
+        "Is PSID payment secure?",
+        "What if my PSID payment fails?",
+    ],
+    "ur": [
+        "PSID کیا ہے؟",
+        "PSID کیسے بنائیں؟",
+        "PSID کیسے تصدیق کریں؟",
+        "PSID کے ذریعے ڈیجیٹل ادائیگی کیسے کریں؟",
+        "Easypaisa سے PSID ادائیگی کیسے کریں؟",
+        "JazzCash سے PSID ادائیگی کیسے کریں؟",
+        "PSID ادائیگی کون سے بینک سپورٹ کرتے ہیں؟",
+        "کیا PSID ادائیگی محفوظ ہے؟",
+        "اگر PSID ادائیگی ناکام ہو جائے تو کیا کریں؟",
+    ],
+    "ps": [
+        "PSID څه شی دی؟",
+        "PSID څنګه جوړ کړو؟",
+        "PSID څنګه تایید کړو؟",
+        "د PSID له لارې ډیجیټل تادیه څنګه وکړو؟",
+        "د Easypaisa له لارې د PSID تادیه څنګه وکړو؟",
+        "د JazzCash له لارې د PSID تادیه څنګه وکړو؟",
+        "کوم بانکونه د PSID تادیه ملاتړ کوي؟",
+        "ایا د PSID تادیه خوندي ده؟",
+        "که چیرې د PSID تادیه ناکامه شي نو څه وکړو؟",
+    ],
+}
+
+
+@app.route("/api/suggestions", methods=["GET"])
+def api_suggestions():
+    lang = (request.args.get("lang") or "en").strip().lower()
+    if lang not in SUGGESTIONS:
+        lang = "en"
+    return jsonify({"lang": lang, "suggestions": SUGGESTIONS[lang]})
+
 
 @app.route("/api/chat", methods=["POST", "OPTIONS"])
 @limiter.limit("30 per minute; 50 per day", key_func=get_public_chat_user_key)

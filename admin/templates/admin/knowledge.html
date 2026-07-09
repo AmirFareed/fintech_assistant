@@ -4,49 +4,130 @@
 
 {% block content %}
 
-<div class="dash-row">
+<div class="dash-row kb-layout">
 
   <!-- Upload new file -->
-  <div class="admin-card" style="min-width:320px;max-width:400px">
-    <h3 class="card-title">Upload Document</h3>
-    <p class="card-sub">Add a new PDF, TXT, or DOCX to a department's knowledge base.</p>
+  <div class="admin-card kb-upload-card">
+    <div class="kb-card-header">
+      <div class="kb-card-icon">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <div>
+        <h3 class="card-title" style="margin-bottom:2px">Upload Document</h3>
+        <p class="card-sub" style="margin-bottom:0">Add PDF, TXT, or DOCX to a department's knowledge base.</p>
+      </div>
+    </div>
+
+    <div class="kb-divider"></div>
+
     <form id="kbUploadForm" class="kb-form">
-      <div class="login-field">
-        <label>Department</label>
-        <select name="department_id" required {% if not departments %}disabled{% endif %}>
+      <div class="kb-field">
+        <label class="kb-label">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Department
+        </label>
+        <select name="department_id" class="kb-select" required {% if not departments %}disabled{% endif %}>
           <option value="" disabled selected>Select department</option>
           {% for dept in departments %}
           <option value="{{ dept.id }}">{{ dept.name }}</option>
           {% endfor %}
         </select>
       </div>
-      <div class="login-field">
-        <label>File</label>
-        <input type="file" name="file" accept=".pdf,.txt,.docx" required>
-        <span style="font-size:11px;color:#8a97ab;margin-top:4px;display:block">PDF, TXT, DOCX supported</span>
+
+      <div class="kb-field">
+        <label class="kb-label">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+          File
+        </label>
+        <label class="kb-file-drop" id="kbFileDrop">
+          <input type="file" name="file" id="kbFileInput" accept=".pdf,.txt,.docx" required style="display:none">
+          <div class="kb-file-icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <span class="kb-file-label" id="kbFileLabel">Click to choose a file</span>
+          <span class="kb-file-types">PDF · TXT · DOCX</span>
+        </label>
       </div>
-      <button type="submit" class="login-btn" id="kbSubmitBtn">Upload &amp; Ingest</button>
-      <div id="kbStatus" style="margin-top:10px;font-size:13px;display:none"></div>
+
+      <button type="submit" class="kb-submit-btn" id="kbSubmitBtn">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload &amp; Ingest
+      </button>
+
+      <div id="kbStatus" class="kb-status" style="display:none"></div>
     </form>
   </div>
 
-  <!-- Existing files -->
-  <div class="admin-card flex-2">
-    <h3 class="card-title">Ingested Files</h3>
+  <!-- Ingested files table -->
+  <div class="admin-card flex-2 kb-files-card">
+    <div class="kb-card-header" style="margin-bottom:16px">
+      <div class="kb-card-icon kb-card-icon-green">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+      </div>
+      <div>
+        <h3 class="card-title" style="margin-bottom:2px">Ingested Files</h3>
+        <p class="card-sub" style="margin-bottom:0">Documents currently in the knowledge base.</p>
+      </div>
+    </div>
     <div class="table-wrap">
-      <table class="admin-table">
-        <thead><tr>
-          <th>File</th><th>Department</th><th>Uploaded</th>
-        </tr></thead>
+      <table class="admin-table kb-table">
+        <thead>
+          <tr>
+            <th>
+              <span class="th-inner">
+                <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                File
+              </span>
+            </th>
+            <th>
+              <span class="th-inner">
+                <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                Department
+              </span>
+            </th>
+            <th>
+              <span class="th-inner">
+                <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Uploaded
+              </span>
+            </th>
+            <th></th>
+          </tr>
+        </thead>
         <tbody>
         {% for f in files %}
-        <tr>
-          <td class="td-query">{{ f.original_file_name }}</td>
-          <td class="td-muted">{{ f.department_name }}</td>
+        <tr id="file-row-{{ f.id }}">
+          <td>
+            <div class="kb-file-row">
+              <div class="kb-file-ext">{{ f.original_file_name.rsplit('.',1)[-1].upper() if '.' in f.original_file_name else 'FILE' }}</div>
+              <span class="td-query">{{ f.original_file_name }}</span>
+            </div>
+          </td>
+          <td><span class="intent-chip">{{ f.department_name }}</span></td>
           <td class="td-muted">{{ f.created_at[:16].replace('T', ' ') if f.created_at else '—' }}</td>
+          <td>
+            <button class="kb-delete-btn" onclick="deleteFile('{{ f.id }}', '{{ f.original_file_name }}')" title="Delete file">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+          </td>
         </tr>
         {% else %}
-        <tr><td colspan="3" class="empty-state">No files ingested yet.</td></tr>
+        <tr>
+          <td colspan="3" class="kb-empty-state">
+            <div class="kb-empty-icon">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </div>
+            <p>No files ingested yet.</p>
+            <span>Upload a document to get started.</span>
+          </td>
+        </tr>
         {% endfor %}
         </tbody>
       </table>
@@ -59,34 +140,73 @@
 
 {% block scripts %}
 <script>
-document.getElementById('kbUploadForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const btn = document.getElementById('kbSubmitBtn');
-  const status = document.getElementById('kbStatus');
+async function deleteFile(fileId, fileName) {
+  if (!confirm(`Delete "${fileName}"?\n\nThis will also remove all its chunks from the knowledge base.`)) return;
+
+  const row = document.getElementById('file-row-' + fileId);
+  const btn = row.querySelector('.kb-delete-btn');
   btn.disabled = true;
-  btn.textContent = 'Uploading…';
-  status.style.display = 'none';
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-18 0"/></svg>';
 
   try {
-    const res = await fetch('/api/upload', { method: 'POST', body: new FormData(this) });
+    const res  = await fetch(`/admin/api/delete-file/${fileId}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (data.success) {
+      row.style.transition = 'opacity 0.3s, transform 0.3s';
+      row.style.opacity = '0';
+      row.style.transform = 'translateX(10px)';
+      setTimeout(() => row.remove(), 320);
+    } else {
+      alert('Delete failed: ' + (data.error || 'Unknown error'));
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
+    }
+  } catch {
+    alert('Connection error. Please try again.');
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
+  }
+}
+
+// Show selected filename in the drop zone
+document.getElementById('kbFileInput').addEventListener('change', function () {
+  const label = document.getElementById('kbFileLabel');
+  label.textContent = this.files[0] ? this.files[0].name : 'Click to choose a file';
+});
+
+document.getElementById('kbUploadForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn    = document.getElementById('kbSubmitBtn');
+  const status = document.getElementById('kbStatus');
+  btn.disabled = true;
+  btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/></svg> Uploading…';
+  status.style.display = 'none';
+  status.className = 'kb-status';
+
+  try {
+    const res  = await fetch('/api/upload', { method: 'POST', body: new FormData(this) });
     const data = await res.json();
     status.style.display = 'block';
     if (data.error) {
-      status.style.color = '#b91c1c';
+      status.className = 'kb-status error';
       status.textContent = data.error;
     } else {
-      status.style.color = '#15803d';
-      status.textContent = data.message || 'Uploaded successfully.';
+      status.className = 'kb-status success';
+      status.textContent = data.message || 'Uploaded & ingested successfully.';
       this.reset();
+      document.getElementById('kbFileLabel').textContent = 'Click to choose a file';
     }
   } catch {
     status.style.display = 'block';
-    status.style.color = '#b91c1c';
+    status.className = 'kb-status error';
     status.textContent = 'Connection error. Please try again.';
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Upload & Ingest';
+    btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload &amp; Ingest';
   }
 });
 </script>
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
 {% endblock %}

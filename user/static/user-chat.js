@@ -86,6 +86,31 @@
             .replace(/\n/g, "<br>");
     }
 
+    function extractYouTubeId(text) {
+        const patterns = [
+            /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
+            /youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/,
+            /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+        ];
+        for (const pattern of patterns) {
+            const match = text.match(pattern);
+            if (match) return match[1];
+        }
+        return null;
+    }
+
+    function createYouTubeEmbed(videoId) {
+        const wrapper = document.createElement("div");
+        wrapper.style.cssText = "margin-top:10px;border-radius:10px;overflow:hidden;max-width:100%;";
+        const iframe = document.createElement("iframe");
+        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+        iframe.style.cssText = "width:100%;height:200px;border:none;border-radius:10px;";
+        iframe.setAttribute("allowfullscreen", "true");
+        iframe.setAttribute("loading", "lazy");
+        wrapper.appendChild(iframe);
+        return wrapper;
+    }
+
     function isRtl(language) {
         return language === "ur" || language === "ps";
     }
@@ -232,11 +257,21 @@
         const resetButton = root.querySelector('[data-action="reset"]');
 
         // Session & conversation history
+        function generateUUID() {
+            try {
+                return crypto.randomUUID();
+            } catch (e) {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    const r = Math.random() * 16 | 0;
+                    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+        }
+
         let sessionId = sessionStorage.getItem("fw-session-id");
         if (!sessionId) {
-            sessionId = typeof crypto !== "undefined" && crypto.randomUUID
-                ? crypto.randomUUID()
-                : Math.random().toString(36).slice(2) + Date.now().toString(36);
+            sessionId = generateUUID();
             sessionStorage.setItem("fw-session-id", sessionId);
         }
         let conversationHistory = [];
@@ -705,6 +740,11 @@
 
             if (details.language && isRtl(details.language)) {
                 bubble.setAttribute("dir", "rtl");
+            }
+
+            const youtubeId = extractYouTubeId(text);
+            if (youtubeId) {
+                bubble.appendChild(createYouTubeEmbed(youtubeId));
             }
 
             bubbleWrap.appendChild(bubble);

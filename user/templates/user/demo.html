@@ -276,9 +276,19 @@
     let voiceEndedWithError = false;
 
     // ── Session & history ─────────────────────────────────────────────────────
+    function generateUUID() {
+        try { return crypto.randomUUID(); } catch (e) {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+    }
+
     let sessionId = sessionStorage.getItem('fintech-session-id');
     if (!sessionId) {
-        sessionId = crypto.randomUUID();
+        sessionId = generateUUID();
         sessionStorage.setItem('fintech-session-id', sessionId);
     }
     let conversationHistory = JSON.parse(sessionStorage.getItem('fintech-history') || '[]');
@@ -577,6 +587,32 @@
         messagesEl.appendChild(div);
 
         const botContent = div.querySelector('.bot-content');
+
+        const ytMatch = answer.match(
+            /(?:youtube\.com\/shorts\/|youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+        );
+        if (ytMatch) {
+            const videoId = ytMatch[1];
+            const ytWrap = document.createElement('div');
+            ytWrap.style.cssText = 'margin-top:12px;border-radius:12px;overflow:hidden;max-width:100%;cursor:pointer;position:relative;';
+            ytWrap.innerHTML = `
+                <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg"
+                     style="width:100%;display:block;border-radius:12px;" alt="Video preview">
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+                            width:56px;height:56px;background:rgba(255,0,0,0.85);border-radius:50%;
+                            display:flex;align-items:center;justify-content:center;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>`;
+            ytWrap.addEventListener('click', function () {
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                iframe.style.cssText = 'width:100%;height:220px;border:none;border-radius:12px;display:block;';
+                iframe.setAttribute('allowfullscreen', 'true');
+                iframe.allow = 'autoplay; encrypted-media';
+                ytWrap.replaceWith(iframe);
+            });
+            div.querySelector('.message-bubble').appendChild(ytWrap);
+        }
 
         if (payment_options && payment_options.length) {
             botContent.appendChild(buildPaymentOptions(payment_options));
