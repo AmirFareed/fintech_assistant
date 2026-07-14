@@ -777,6 +777,9 @@
 
 .fw-bubble[dir="rtl"] { text-align: right; }
 .fw-bubble p { margin: 0; }
+.fw-bubble p + p { margin-top: 10px; }
+.fw-bubble p[dir="rtl"] { direction: rtl; text-align: right; }
+.fw-bubble p[dir="ltr"] { direction: ltr; text-align: left; }
 
 /* ─── Badges ─────────────────────────────────────────────────────────────── */
 .fw-badge-row {

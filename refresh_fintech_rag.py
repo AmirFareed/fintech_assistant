@@ -27,7 +27,7 @@ FILES = [
     "psid_info.txt",
     "easypaisa_jazzcash.txt",
     "other_banks.txt",
-    "irrelevant_questions.txt",
+    "other_questions.txt",
 ]
 
 
@@ -125,7 +125,7 @@ def ingest_updated_files(department_id: str) -> int:
 
 def main() -> None:
     print("=" * 56)
-    print(" FinTech AI Assistant - RAG Refresh")
+    print(" Paymir AI Assistant - RAG Refresh")
     print("=" * 56)
 
     department_id = get_department_id()

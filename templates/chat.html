@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinTech AI Assistant - Digital Payment Guide</title>
+    <title>Paymir AI Assistant - Digital Payment Guide</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='fintech-logo.png') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='fintech-logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +20,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-wrap">
-                <img src="{{ url_for('static', filename='logo-wide.png') }}" alt="FinTech AI Assistant logo" class="brand-logo">
+                <img src="{{ url_for('static', filename='logo-wide.png') }}" alt="Paymir AI Assistant logo" class="brand-logo">
             </div>
             <div class="logo-text-wrap">
                 <span class="logo-tagline">Digital Payment Guide</span>
@@ -113,9 +113,9 @@
                     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
                 <div class="topbar-brand">
-                    <img src="{{ url_for('static', filename='fintech-logo.png') }}" alt="FinTech AI Assistant logo" class="topbar-logo">
+                    <img src="{{ url_for('static', filename='fintech-logo.png') }}" alt="Paymir AI Assistant logo" class="topbar-logo">
                     <div>
-                        <div class="topbar-title">FinTech AI Assistant</div>
+                        <div class="topbar-title">Paymir AI Assistant</div>
                         <div class="topbar-status">
                             <span class="status-dot"></span>
                             <span class="status-text">Online - PSID Digital Payments</span>
@@ -143,7 +143,7 @@
                 <div class="welcome-glow"></div>
 
                 <div class="welcome-text">
-                    <h2>Welcome to FinTech AI Assistant!</h2>
+                    <h2>Welcome to Paymir AI Assistant!</h2>
                     <p>Your dedicated guide for <strong>PSID-based digital payments</strong>. I can help you understand, generate, verify, and pay using your PSID through Easypaisa, JazzCash, or any bank.</p>
                 </div>
 
@@ -243,7 +243,7 @@
                     <textarea
                         id="user_query"
                         rows="1"
-                        placeholder="Ask FinTech AI Assistant about PSID, digital payments, Easypaisa, JazzCash..."
+                        placeholder="Ask Paymir AI Assistant about PSID, digital payments, Easypaisa, JazzCash..."
                         aria-label="Your message"
                     ></textarea>
                     <div class="lang-select-wrap" id="languageMenu">
@@ -284,7 +284,7 @@
                     </button>
                 </div>
                 <p class="voice-status" id="voiceStatus" hidden></p>
-                <p class="input-hint">FinTech AI Assistant - For PSID Digital Payment Guidance Only</p>
+                <p class="input-hint">Paymir AI Assistant - For PSID Digital Payment Guidance Only</p>
             </div>
         </footer>
 
@@ -524,7 +524,7 @@
         div.className = 'message bot-message';
         div.id = 'typingIndicator';
         div.innerHTML = `
-            <img src="{{ url_for('static', filename='fintech-logo.png') }}" alt="FinTech AI Assistant logo" class="msg-avatar bot-avatar-sm">
+            <img src="{{ url_for('static', filename='fintech-logo.png') }}" alt="Paymir AI Assistant logo" class="msg-avatar bot-avatar-sm">
             <div class="message-bubble bot-bubble typing-bubble">
                 <span class="typing-dots"><span></span><span></span><span></span></span>
             </div>
@@ -646,7 +646,7 @@
             </div>` : '';
 
         div.innerHTML = `
-            <img src="{{ url_for('static', filename='fintech-logo.png') }}" alt="FinTech AI Assistant logo" class="msg-avatar bot-avatar-sm">
+            <img src="{{ url_for('static', filename='fintech-logo.png') }}" alt="Paymir AI Assistant logo" class="msg-avatar bot-avatar-sm">
             <div class="bot-content">
                 <div class="${bubbleClasses}">${marked.parse(answer)}</div>
                 ${badgeRow}
@@ -988,11 +988,11 @@
     window.FintechUserChatWidgetConfig = {
         apiEndpoint: "{{ url_for('api_chat') }}",
         logoUrl: "{{ url_for('static', filename='fintech-logo.png') }}",
-        assistantName: "FinTech AI Assistant",
+        assistantName: "Paymir AI Assistant",
         assistantTagline: "",
         launcherLabel: "Ask Me",
         launcherSubtitle: "",
-        welcomeTitle: "Welcome to FinTech AI Assistant!",
+        welcomeTitle: "Welcome to Paymir AI Assistant!",
         welcomeMessage: "",
         welcomePrompt: "Choose a question or ask your own",
         suggestions: [

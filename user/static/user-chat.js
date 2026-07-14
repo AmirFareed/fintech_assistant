@@ -20,11 +20,11 @@
         apiEndpoint: defaultApiEndpoint,
         logoUrl: defaultLogoUrl,
         stylesheetUrl: defaultStylesheetUrl,
-        assistantName: "FinTech AI Assistant",
+        assistantName: "Paymir AI Assistant",
         assistantTagline: "",
         launcherLabel: "Ask Me",
         launcherSubtitle: "",
-        welcomeTitle: "Welcome to FinTech AI Assistant!",
+        welcomeTitle: "Welcome to Paymir AI Assistant!",
         welcomeMessage: "",
         welcomePrompt: "Choose a question or ask your own",
         suggestions: [
@@ -77,13 +77,28 @@
             .replace(/'/g, "&#39;");
     }
 
-    function formatMessage(value) {
+    const ARABIC_SCRIPT_RE = /[؀-ۿ]/;
+
+    function formatInline(value) {
         return escapeHtml(value)
             .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
             .replace(/^### (.+)$/gm, "<strong>$1</strong>")
             .replace(/^## (.+)$/gm, "<strong>$1</strong>")
             .replace(/^# (.+)$/gm, "<strong>$1</strong>")
             .replace(/\n/g, "<br>");
+    }
+
+    function formatMessage(value) {
+        // Bilingual replies stack an English paragraph and an Urdu paragraph.
+        // Each paragraph gets its own direction so the Urdu block reads
+        // right-to-left even though the overall bubble stays LTR.
+        return String(value)
+            .split(/\n{2,}/)
+            .map(function (block) {
+                const dir = ARABIC_SCRIPT_RE.test(block) ? "rtl" : "ltr";
+                return `<p dir="${dir}">${formatInline(block)}</p>`;
+            })
+            .join("");
     }
 
     function extractYouTubeId(text) {
@@ -112,7 +127,9 @@
     }
 
     function isRtl(language) {
-        return language === "ur" || language === "ps";
+        // "en"/"ur" responses are bilingual (English + Urdu in one message),
+        // so the bubble stays LTR and lets each script's own direction render naturally.
+        return language === "ps";
     }
 
     function autosize(textarea) {

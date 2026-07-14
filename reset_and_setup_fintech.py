@@ -155,7 +155,7 @@ def setup_fintech():
 
 def main():
     print("=" * 55)
-    print("  FinTech AI Assistant - DB Reset & Setup")
+    print("  Paymir AI Assistant - DB Reset & Setup")
     print("=" * 55)
     print()
 

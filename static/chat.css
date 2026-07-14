@@ -744,6 +744,29 @@ body.dark-mode .question-card:hover {
     unicode-bidi: isolate;
 }
 
+/* Per-paragraph direction for bilingual (English + Urdu) replies, where a
+   single bubble mixes an LTR paragraph and an RTL paragraph. */
+.message-bubble p[dir="rtl"],
+.message-bubble li[dir="rtl"],
+.message-bubble h1[dir="rtl"],
+.message-bubble h2[dir="rtl"],
+.message-bubble h3[dir="rtl"],
+.message-bubble blockquote[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: isolate;
+}
+
+.message-bubble p[dir="ltr"],
+.message-bubble li[dir="ltr"],
+.message-bubble h1[dir="ltr"],
+.message-bubble h2[dir="ltr"],
+.message-bubble h3[dir="ltr"],
+.message-bubble blockquote[dir="ltr"] {
+    direction: ltr;
+    text-align: left;
+}
+
 /* ── Avatars ── */
 .msg-avatar {
     width: 32px; height: 32px; border-radius: 50%;

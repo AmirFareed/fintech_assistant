@@ -5,9 +5,10 @@ from services.router import detect_intent, find_best_service
 from services.retrieval import search_chunks, search_chunks_debug
 from services.response_generator import (
     PAYMENT_OPTIONS,
-    GUARD_RAIL_RESPONSE,
     generate_greeting_response,
     generate_chat_response,
+    generate_fallback_response,
+    get_guard_rail_response,
     get_suggested_questions,
     is_injection_attempt,
 )
@@ -199,7 +200,7 @@ def handle_chat_query(
     if is_injection_attempt(user_query):
         response_language = resolve_response_language(user_query, preferred_language)
         return {
-            "answer": GUARD_RAIL_RESPONSE.get(response_language, GUARD_RAIL_RESPONSE["en"]),
+            "answer": get_guard_rail_response(response_language),
             "service": None,
             "intent": "guard_rail",
             "response_language": response_language,
@@ -229,24 +230,7 @@ def handle_chat_query(
         elapsed_ms = int((time.monotonic() - t_start) * 1000)
         store_query(user_query, intent, session_id=session_id, response_language=response_language, had_result=False, response_time_ms=elapsed_ms)
 
-        if response_language == "ps":
-            fallback_answer = (
-                "زه د **PSID-based digital payments** په اړه مرسته کوم. "
-                "ستاسو د پوښتنې لپاره مې ځانګړي معلومات ونه موندل.\n\n"
-                "مهرباني وکړئ پوښتنه په بل ډول ولیکئ یا له لاندې موضوعاتو څخه یوه وټاکئ:"
-            )
-        elif response_language == "ur":
-            fallback_answer = (
-                "میں **PSID-based digital payments** کے بارے میں مدد کے لیے حاضر ہوں۔ "
-                "مجھے آپ کے سوال کے لیے مخصوص معلومات نہیں مل سکیں۔\n\n"
-                "براہ کرم سوال کو دوسرے انداز میں لکھیں یا نیچے دیے گئے موضوعات میں سے ایک منتخب کریں:"
-            )
-        else:
-            fallback_answer = (
-                "I'm here to help with **PSID-based digital payments**. "
-                "I couldn't find specific information for your query.\n\n"
-                "Please try rephrasing your question or select a topic below:"
-            )
+        fallback_answer = generate_fallback_response(response_language)
         return {
             "answer": fallback_answer,
             "service": None,

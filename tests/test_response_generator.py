@@ -66,17 +66,17 @@ class TestIsInjectionAttempt:
 class TestGenerateGreetingResponse:
     def test_english_greeting_contains_key_phrases(self):
         result = generate_greeting_response("en")
-        assert "FinTech AI Assistant" in result
+        assert "Paymir AI Assistant" in result
         assert "PSID" in result
 
     def test_urdu_greeting_contains_key_phrases(self):
         result = generate_greeting_response("ur")
-        assert "FinTech AI Assistant" in result
+        assert "Paymir AI Assistant" in result
         assert "PSID" in result
 
     def test_pashto_greeting_contains_key_phrases(self):
         result = generate_greeting_response("ps")
-        assert "FinTech AI Assistant" in result
+        assert "Paymir AI Assistant" in result
         assert "PSID" in result
 
     def test_default_is_english(self):
