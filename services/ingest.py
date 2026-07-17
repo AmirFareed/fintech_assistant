@@ -5,7 +5,12 @@ from services.supabase_client import supabase
 from services.file_parser import extract_text
 from services.chunker import chunk_text
 from services.embeddings import embed_text
+from services.retrieval import vector_retrieval_enabled
 from config import Config
+
+
+def embed_chunk_if_enabled(chunk: str):
+    return embed_text(chunk) if vector_retrieval_enabled() else None
 
 
 SERVICE_NAME_ALIASES = {
@@ -214,7 +219,7 @@ def save_service_chunks(
             "section_name": service_name,
             "chunk_text": chunk,
             "chunk_index": idx,
-            "embedding": embed_text(chunk),
+            "embedding": embed_chunk_if_enabled(chunk),
         })
 
     if rows:
@@ -237,7 +242,7 @@ def save_unmatched_chunks(
             "section_name": block_name or "general",
             "chunk_text": chunk,
             "chunk_index": idx,
-            "embedding": embed_text(chunk),
+            "embedding": embed_chunk_if_enabled(chunk),
         })
 
     if rows:
