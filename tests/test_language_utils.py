@@ -1,5 +1,5 @@
 import pytest
-from services.language_utils import (
+from utils.language import (
     normalize_text,
     contains_arabic_script,
     is_pashto_text,

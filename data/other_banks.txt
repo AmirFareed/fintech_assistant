@@ -1,0 +1,39 @@
+=== Service Start ===
+Service Name: Supported Banks PSID Payment
+
+Overview:
+Many banks and payment providers connected to 1LINK offer 1BILL Invoice/Voucher or PSID payment through mobile banking, internet banking, ATMs, or other supported channels. Availability and menu names depend on the institution and app version.
+
+Supported Banks and Payment Channels:
+- ABHI Microfinance Bank (formerly FINCA Microfinance Bank)
+- Al Baraka Bank
+- Allied Bank
+- APNA Microfinance Bank
+- Askari Bank
+- Bank Al Habib
+- Bank Alfalah
+- BankIslami
+- Bank Makramah (formerly Summit Bank)
+- Bank of Khyber
+- Bank of Punjab
+- Dubai Islamic Bank
+- Easypaisa
+
+- Faysal Bank
+- First Women Bank
+- HBL
+- HabibMetro Bank
+- ICBC Pakistan
+- JS Bank
+- MCB Bank
+- MCB Islamic Bank
+- Meezan Bank
+
+- Mobilink Microfinance Bank / JazzCash
+- National Bank of Pakistan
+- NRSP Microfinance Bank
+- Samba Bank
+- Sindh Bank
+- Soneri Bank
+- Standard Chartered Bank
+- UBL
