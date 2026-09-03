@@ -1,50 +1,86 @@
-# fintech_assistant
+# Fintech Assistant
 
-Flask chatbot for PSID-based digital payment guidance backed by Supabase and Groq.
+Flask chatbot for PSID-based digital-payment guidance, backed by Supabase and Groq.
 
-## Free Hosting Recommendation
+## Project structure
 
-For this codebase, the best free target is currently Render. The app is a long-running Flask service and is a better match for a Python web service than a serverless-only platform.
+```text
+fintech_assistant-main/
+├── README.md                 Project documentation and setup
+├── requirements.txt         Python dependencies
+├── .env.example             Environment variable template
+├── .env                     Local secrets (ignored by Git)
+├── .gitignore               Git exclusions
+├── config.yaml              Non-secret application defaults
+├── main.py                  Local application entry point
+├── api/                     Flask routes, UI blueprints, templates, and assets
+├── ingestion/               File parsing and ingestion pipeline
+├── chunking/                Text splitting and overlap logic
+├── embeddings/              Embedding model adapter
+├── vectordb/                Supabase client and vector persistence helpers
+├── retrieval/               Keyword/vector search and intent routing
+├── prompts/                 Prompt templates and response construction
+├── llm/                     LLM clients and chat orchestration
+├── utils/                   Configuration and language helpers
+├── data/                    Source knowledge-base documents
+├── database/                Database schema
+├── scripts/                 Setup, refresh, ingestion, and maintenance commands
+├── tests/                   Unit and integration tests
+├── logs/                    Runtime log location
+└── services/                Backward-compatible aliases for older imports
+```
 
-## Render Deployment
+The implementation lives in the responsibility-based packages. `app.py`, `config.py`, and `services/` remain as compatibility shims so existing deployment commands and integrations do not fail during migration.
 
-This repo now includes [render.yaml](/c:/Users/cs001/Downloads/fintech_assistant/render.yaml), so you can deploy it in either of these ways:
+## Setup
 
-1. Recommended: in Render, click `New` -> `Blueprint`, connect this GitHub repo, and let Render read `render.yaml`.
-2. Manual: create a `Web Service` from this GitHub repository and use the settings below.
+1. Create and activate a Python 3.11 or 3.12 virtual environment.
+2. Install dependencies:
 
-Manual settings:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-1. Branch: `main`
-2. Environment: `Python`
-3. Build command:
-   `pip install -r requirements.txt`
-4. Start command:
-   `gunicorn --bind 0.0.0.0:$PORT app:app`
-5. Health check path:
-   `/healthz`
-6. Add environment variables:
-   `SECRET_KEY`
-   `SUPABASE_URL`
-   `SUPABASE_KEY`
-   `SUPABASE_BUCKET`
-   `SUPABASE_TIMEOUT_SECONDS`
-   `ADMIN_USERNAME`
-   `ADMIN_PASSWORD`
-   `GROQ_API_KEY`
-   `GROQ_MODEL`
-   `LLM_PROVIDER`
-   `QEHWA_MODEL_ID`
-   `QEHWA_DEVICE`
-   `QEHWA_MAX_NEW_TOKENS`
-   `QEHWA_TEMPERATURE`
-   `WIDGET_ALLOWED_ORIGINS`
+3. Copy `.env.example` to `.env` and enter the Supabase and LLM credentials. Never commit `.env`.
+4. Create the database objects using `database/schema.sql`.
+5. Start the app:
 
-## Notes
+   ```bash
+   python main.py
+   ```
 
-- For Render free tier, set `LLM_PROVIDER=groq` and provide `GROQ_API_KEY`. The local `qehwa` fallback is too heavy for a free 512 MB instance.
-- For Render free tier, set `ENABLE_VECTOR_RETRIEVAL=false`. This avoids loading the local embedding model in the web worker and uses keyword retrieval instead.
-- The `uploads/` folder is local filesystem storage. Render free web services do not persist local files across restarts or redeploys, so uploaded source files should be treated as temporary.
-- `/health` checks Supabase connectivity.
-- `/healthz` is a lightweight liveness endpoint for the host platform.
-- Heavy ML dependencies are lazy-loaded so the app can boot before embedding or fallback-model code is needed.
+The default URL is `http://localhost:5000`. `/healthz` is the lightweight liveness endpoint, while `/health` also checks Supabase connectivity.
+
+## Configuration
+
+Safe defaults such as chunk size, retrieval count, model names, and timeouts live in `config.yaml`. Environment variables override YAML values, and secrets belong only in `.env` or the hosting provider's secret manager.
+
+For memory-constrained hosting, use `LLM_PROVIDER=groq` and `ENABLE_VECTOR_RETRIEVAL=false`.
+
+## Maintenance commands
+
+Run scripts from the repository root:
+
+```bash
+python -m scripts.reset_and_setup_fintech
+python -m scripts.ingest_fintech
+python -m scripts.refresh_fintech_rag
+python -m scripts.embed_chunks
+python -m scripts.setup_services
+```
+
+The scripts read source documents from `data/`.
+
+## Tests
+
+```bash
+python -m pytest
+```
+
+The configured test run writes a self-contained `test_report.html`, which is ignored by Git.
+
+## Deployment
+
+The included Docker, Compose, Render, and Procfile definitions start Gunicorn with `main:app`. On Render, use `/healthz` as the health-check path and configure the variables listed in `.env.example`.
+
+Uploaded files are written to `uploads/`. This directory is ignored by Git and is ephemeral on hosts without persistent disks.

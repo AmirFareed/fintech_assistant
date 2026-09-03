@@ -1,5 +1,5 @@
 import pytest
-from services.router import normalize, detect_intent
+from retrieval.router import normalize, detect_intent
 
 
 class TestNormalize:
@@ -38,6 +38,18 @@ class TestDetectIntentGreeting:
     def test_arabic_salam(self):
         assert detect_intent("سلام") == "greeting"
 
+    def test_conversational_greeting(self):
+        assert detect_intent("hello how are you") == "greeting"
+
+    def test_conversational_greeting_with_punctuation(self):
+        assert detect_intent("Hello, how are you?") == "greeting"
+
+    def test_conversational_greeting_abbreviated(self):
+        assert detect_intent("hello how r u") == "greeting"
+
+    def test_greeting_with_a_real_question_remains_general_help(self):
+        assert detect_intent("hello how are you tell me a joke") == "general_help"
+
 
 class TestDetectIntentEasypaisa:
     def test_easypaisa_word(self):
@@ -64,6 +76,15 @@ class TestDetectIntentOtherBanks:
 
     def test_which_banks_support(self):
         assert detect_intent("which banks support psid") == "other_banks_payment"
+
+    def test_meezan_bank(self):
+        assert detect_intent("how to pay via meezan bank") == "other_banks_payment"
+
+    def test_bank_of_khyber(self):
+        assert detect_intent("how to pay via bank of khyber") == "other_banks_payment"
+
+    def test_bank_al_habib(self):
+        assert detect_intent("how to pay via bank al habib") == "other_banks_payment"
 
 
 class TestDetectIntentPsidVerify:

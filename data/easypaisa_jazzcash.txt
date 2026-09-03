@@ -1,0 +1,88 @@
+=== Service Start ===
+Service Name: Easypaisa PSID Payment
+
+How to Pay via Easypaisa Using PSID:
+Step 1: Log in to the official Easypaisa app.
+Step 2: Open See All.
+Step 3: Open Others.
+Step 4: Select 1 Bill Invoice/Voucher.
+Step 5: Enter the PSID exactly as shown on the official payment slip. For the Paymir flow covered here, the app expects a 17-digit PSID.
+Step 6: Review the institution or biller name, reference details, amount, due date, and payment status.
+Step 7: Confirm the payment only when the retrieved details match the official slip.
+Step 8: Save the successful receipt and transaction reference.
+Step 9: For a step-by-step visual guide, visit https://www.youtube.com/shorts/0SPCIBrM57g
+
+
+
+=== Service Start ===
+Service Name: JazzCash PSID Payment
+
+How to Pay via JazzCash Using PSID:
+Step 1: Log in to the official JazzCash app.
+Step 2: Open Other Payments & Services.
+Step 3: Open Corporate Payments.
+Step 4: Select 1 Bill (Invoice and Voucher).
+Step 5: Enter the PSID exactly as shown on the official payment slip. For the Paymir flow covered here, the app expects a 17-digit PSID.
+Step 6: Review the institution or biller name, reference details, amount, due date, and payment status.
+Step 7: Confirm the payment only when the retrieved details match the official slip.
+Step 8: Save the successful receipt and transaction reference.
+Step 9: For a step-by-step visual guide, visit https://www.youtube.com/shorts/By7rhGDBJU8
+
+
+=== Service Start ===
+Service Name: Bank of Khyber PSID Payment
+
+How to Pay via Bank of Khyber Using PSID:
+Step 1: Log in to the official Bank of Khyber app.
+Step 2: Open the Bill Management section.
+Step 3: Tap the Add option located at the bottom right of the screen.
+Step 4: Select 1 Bill from the available bill payment options.
+Step 5: Select 1 Bill Invoices to continue.
+Step 6: Enter the PSID exactly as shown on the official payment slip.
+Step 7: Review the institution or biller name, reference details, payment amount, and other displayed information.
+Step 8: Confirm the payment only when the retrieved details match the official payment slip.
+Step 9: Save the successful payment receipt and transaction reference.
+Step 10: For a step-by-step visual guide, visit https://www.youtube.com/shorts/PWsdzXKIL6g
+
+=== Service Start ===
+Service Name: HBL PSID Payment
+
+How to Pay via HBL Using PSID:
+Step 1: Log in to the official HBL app.
+Step 2: Open the Payments section from the main menu.
+Step 3: Select 1 Bill from the available payment options.
+Step 4: Select 1 Bill Invoice to continue.
+Step 5: Enter the PSID exactly as shown on the official payment slip.
+Step 6: Review the institution or biller name, reference details, payment amount, and other displayed information.
+Step 7: Confirm the payment only when the retrieved details match the official payment slip.
+Step 8: Save the successful payment receipt and transaction reference.
+Step 9: For a step-by-step visual guide, visit https://www.youtube.com/shorts/u2KdFbHF5Ak
+
+=== Service Start ===
+Service Name: Bank Al Habib PSID Payment
+
+How to Pay via Bank Al Habib Using PSID:
+Step 1: Log in to the official Bank Al Habib app.
+Step 2: Open the Bill Payments section from the main menu.
+Step 3: Scroll down to find the 1 Bill section.
+Step 4: Select the Invoice option under the 1 Bill section.
+Step 5: Enter the PSID exactly as shown on the official payment slip.
+Step 6: Review the institution or biller name, reference details, payment amount, and other displayed information.
+Step 7: Confirm the payment only when the retrieved details match the official payment slip.
+Step 8: Save the successful payment receipt and transaction reference.
+Step 9: For a step-by-step visual guide, visit https://www.youtube.com/shorts/Fmt_dyHBG3I
+
+=== Service Start ===
+Service Name: Meezan Bank PSID Payment
+
+How to Pay via Meezan Bank Using PSID:
+Step 1: Log in to the official Meezan Bank app.
+Step 2: Open the Bill Payment section.
+Step 3: Select Make New Payment.
+Step 4: Search for 1 Bill Invoices in the available bill payment options.
+Step 5: Select 1 Bill Invoices from the search results.
+Step 6: Enter the PSID exactly as shown on the official payment slip.
+Step 7: Review the institution or biller name, reference details, payment amount, and other displayed information.
+Step 8: Confirm the payment only when the retrieved details match the official payment slip.
+Step 9: Save the successful payment receipt and transaction reference.
+Step 10: For a step-by-step visual guide, visit https://www.youtube.com/shorts/gqCIb1pbJYE

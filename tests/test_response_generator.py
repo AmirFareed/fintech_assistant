@@ -1,8 +1,11 @@
 import pytest
-from services.response_generator import (
+from unittest.mock import patch
+from prompts.response_generator import (
     get_suggested_questions,
     is_injection_attempt,
     generate_greeting_response,
+    generate_general_chat_response,
+    GENERAL_CHAT_REMINDER,
     build_context,
     extract_numbered_steps,
     generate_procedural_response,
@@ -83,6 +86,30 @@ class TestGenerateGreetingResponse:
         result = generate_greeting_response("en")
         assert "Hello!" in result
 
+    def test_greeting_asks_for_a_specific_question(self):
+        result = generate_greeting_response("en")
+        assert GENERAL_CHAT_REMINDER["en"] in result
+        assert GENERAL_CHAT_REMINDER["ur"] in result
+
+
+class TestGenerateGeneralChatResponse:
+    @patch("prompts.response_generator.generate_response")
+    def test_missing_reminders_are_added_to_bilingual_answer(self, mock_generate):
+        mock_generate.return_value = (
+            "A concise answer.\n\nایک مختصر جواب۔",
+            {"total_tokens": 10},
+        )
+        answer, usage = generate_general_chat_response("a general question")
+        assert GENERAL_CHAT_REMINDER["en"] in answer
+        assert GENERAL_CHAT_REMINDER["ur"] in answer
+        assert usage["total_tokens"] == 10
+
+    @patch("prompts.response_generator.generate_response")
+    def test_missing_pashto_reminder_is_added(self, mock_generate):
+        mock_generate.return_value = ("لنډ ځواب.", {"total_tokens": 5})
+        answer, _ = generate_general_chat_response("عمومي پوښتنه", language="ps")
+        assert answer.endswith(GENERAL_CHAT_REMINDER["ps"])
+
 
 class TestBuildContext:
     def test_single_chunk(self):
@@ -158,6 +185,10 @@ class TestGenerateProceduralResponse:
     def test_english_other_banks(self):
         result = generate_procedural_response("Other Banks PSID Payment", self._chunks_with_steps(), "en")
         assert "other banks" in result.lower()
+
+    def test_english_named_bank(self):
+        result = generate_procedural_response("Meezan Bank PSID Payment", self._chunks_with_steps(), "en")
+        assert "pay via Meezan Bank using PSID" in result
 
     def test_urdu_contains_steps(self):
         result = generate_procedural_response("JazzCash PSID Payment", self._chunks_with_steps(), "ur")

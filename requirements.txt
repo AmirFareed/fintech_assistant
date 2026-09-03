@@ -12,3 +12,6 @@ groq
 transformers
 accelerate
 gunicorn
+PyYAML
+pytest
+pytest-html

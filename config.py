@@ -1,14 +1,7 @@
-import os
-from dotenv import load_dotenv
+"""Backward-compatible alias for :mod:`utils.config`."""
 
-load_dotenv()
+import sys
 
-class Config:
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
-    SUPABASE_URL = os.getenv("SUPABASE_URL")
-    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-    SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET", "rag-files")
-    SUPABASE_TIMEOUT_SECONDS = float(os.getenv("SUPABASE_TIMEOUT_SECONDS", "5"))
-    WIDGET_ALLOWED_ORIGINS = os.getenv("WIDGET_ALLOWED_ORIGINS", "*")
-    ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
-    ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "changeme123")
+from utils import config as _implementation
+
+sys.modules[__name__] = _implementation

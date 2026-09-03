@@ -5,8 +5,8 @@ from unittest.mock import patch, MagicMock
 @pytest.fixture
 def client():
     # Patch supabase before importing app so the module-level client is mocked
-    with patch("services.supabase_client.supabase") as _mock_sb:
-        from app import app
+    with patch("vectordb.supabase.supabase") as _mock_sb:
+        from api.application import app
         app.config["TESTING"] = True
         app.config["SECRET_KEY"] = "test-secret"
         with app.test_client() as c:
@@ -29,17 +29,35 @@ class TestHealthz:
         assert "version" in data
 
 
+class TestUserInterface:
+    def test_welcome_screen_reflects_supported_banks_and_named_bank_prompt(self, client):
+        html = client.get("/").get_data(as_text=True)
+
+        assert "Coming Soon" not in html
+        assert "How to pay via Meezan Bank?" in html
+        assert "How do I pay using PSID?" in html
+        assert "Start a new conversation" in html
+        assert "new-chat-label" in html
+        assert "<span class=\"q-icon\">💡</span>" not in html
+
+    def test_english_suggestions_match_the_welcome_screen(self, client):
+        suggestions = client.get("/api/suggestions?lang=en").get_json()["suggestions"]
+
+        assert "How to pay via Meezan Bank?" in suggestions
+        assert "How do I pay using PSID?" in suggestions
+
+
 # ── /health ───────────────────────────────────────────────────────────────────
 
 class TestHealth:
-    @patch("app.supabase")
+    @patch("api.application.supabase")
     def test_healthy_when_supabase_ok(self, mock_sb, client):
         mock_sb.table.return_value.select.return_value.limit.return_value.execute.return_value = MagicMock()
         res = client.get("/health")
         assert res.status_code == 200
         assert res.get_json()["supabase"] == "ok"
 
-    @patch("app.supabase")
+    @patch("api.application.supabase")
     def test_degraded_when_supabase_fails(self, mock_sb, client):
         mock_sb.table.return_value.select.return_value.limit.return_value.execute.side_effect = Exception("conn error")
         res = client.get("/health")
@@ -66,7 +84,7 @@ class TestApiChat:
         assert res.status_code == 400
         assert "too long" in res.get_json()["error"].lower()
 
-    @patch("app.handle_chat_query")
+    @patch("api.application.handle_chat_query")
     def test_valid_query_returns_200(self, mock_chat, client):
         mock_chat.return_value = {
             "answer": "Hello!",
@@ -82,7 +100,7 @@ class TestApiChat:
         assert data["answer"] == "Hello!"
         assert data["intent"] == "greeting"
 
-    @patch("app.handle_chat_query")
+    @patch("api.application.handle_chat_query")
     def test_service_dict_is_flattened_to_name(self, mock_chat, client):
         mock_chat.return_value = {
             "answer": "Here is info.",
@@ -96,7 +114,7 @@ class TestApiChat:
         assert res.status_code == 200
         assert res.get_json()["service"] == "Easypaisa PSID Payment"
 
-    @patch("app.handle_chat_query")
+    @patch("api.application.handle_chat_query")
     def test_history_is_passed_cleaned(self, mock_chat, client):
         mock_chat.return_value = {
             "answer": "ok", "service": None, "intent": "greeting",
@@ -111,7 +129,7 @@ class TestApiChat:
         _, kwargs = mock_chat.call_args
         assert kwargs.get("history") is not None or mock_chat.call_args[0][1:] is not None
 
-    @patch("app.handle_chat_query", side_effect=Exception("LLM down"))
+    @patch("api.application.handle_chat_query", side_effect=Exception("LLM down"))
     def test_internal_error_returns_500(self, mock_chat, client):
         res = client.post("/api/chat", json={"user_query": "hello"})
         assert res.status_code == 500
@@ -125,14 +143,14 @@ class TestApiChat:
 # ── /api/feedback ─────────────────────────────────────────────────────────────
 
 class TestApiFeedback:
-    @patch("app.supabase")
+    @patch("api.application.supabase")
     def test_valid_positive_rating(self, mock_sb, client):
         mock_sb.table.return_value.insert.return_value.execute.return_value = MagicMock()
         res = client.post("/api/feedback", json={"rating": 1, "query_text": "test"})
         assert res.status_code == 200
         assert res.get_json()["ok"] is True
 
-    @patch("app.supabase")
+    @patch("api.application.supabase")
     def test_valid_negative_rating(self, mock_sb, client):
         mock_sb.table.return_value.insert.return_value.execute.return_value = MagicMock()
         res = client.post("/api/feedback", json={"rating": -1})
@@ -151,7 +169,7 @@ class TestApiFeedback:
         res = client.post("/api/feedback", json={})
         assert res.status_code == 400
 
-    @patch("app.supabase")
+    @patch("api.application.supabase")
     def test_supabase_error_returns_500(self, mock_sb, client):
         mock_sb.table.return_value.insert.return_value.execute.side_effect = Exception("db error")
         res = client.post("/api/feedback", json={"rating": 1})
@@ -184,7 +202,7 @@ class TestApiUpload:
 
 class TestCorsHeaders:
     def test_cors_header_present_on_chat(self, client):
-        with patch("app.handle_chat_query") as mock_chat:
+        with patch("api.application.handle_chat_query") as mock_chat:
             mock_chat.return_value = {
                 "answer": "hi", "service": None, "intent": "greeting",
                 "response_language": "en", "suggested_questions": [], "payment_options": None,
@@ -201,14 +219,14 @@ class TestCorsHeaders:
 
 class TestFormatBackendError:
     def test_request_error_gives_friendly_message(self):
-        from app import format_backend_error
+        from api.application import format_backend_error
         from httpx import RequestError
         err = RequestError("connection failed")
         result = format_backend_error(err)
         assert "unavailable" in result.lower()
 
     def test_generic_exception_returns_str(self):
-        from app import format_backend_error
+        from api.application import format_backend_error
         result = format_backend_error(ValueError("bad value"))
         assert result == "bad value"
 
@@ -218,12 +236,12 @@ class TestFormatBackendError:
 class TestBuildCorsHeaders:
     def test_wildcard_origin_by_default(self, client):
         with client.application.test_request_context("/"):
-            from app import build_cors_headers
+            from api.application import build_cors_headers
             headers = build_cors_headers()
         assert headers["Access-Control-Allow-Origin"] == "*"
 
     def test_allowed_methods_present(self, client):
         with client.application.test_request_context("/"):
-            from app import build_cors_headers
+            from api.application import build_cors_headers
             headers = build_cors_headers()
         assert "POST" in headers["Access-Control-Allow-Methods"]

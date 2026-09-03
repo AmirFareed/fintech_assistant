@@ -1,5 +1,5 @@
 import pytest
-from services.chunker import split_long_paragraph, chunk_text
+from chunking.splitter import split_long_paragraph, chunk_text
 
 
 class TestSplitLongParagraph:
