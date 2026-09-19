@@ -84,3 +84,50 @@ The configured test run writes a self-contained `test_report.html`, which is ign
 The included Docker, Compose, Render, and Procfile definitions start Gunicorn with `main:app`. On Render, use `/healthz` as the health-check path and configure the variables listed in `.env.example`.
 
 Uploaded files are written to `uploads/`. This directory is ignored by Git and is ephemeral on hosts without persistent disks.
+
+### Also running on Oracle Cloud (Always Free)
+
+Migrated here to fix Render free-tier cold-start latency, and to get enough
+headroom to run with `ENABLE_VECTOR_RETRIEVAL=true` (Render's 512MB tier
+required leaving it `false` — see `render.yaml`). Shares the same Ampere A1
+Always Free VM as the `onboarding-verification` backend, each app in its own
+container behind the same [Caddy](https://caddyserver.com/) instance, which
+handles HTTPS for both.
+
+**Deployment shape on the VM:**
+
+- **Docker container** `fintech-assistant`, built from this repo's own
+  `Dockerfile`, run with `--restart=always`. Bound to `127.0.0.1:8001` only -
+  not exposed directly to the internet, same as the onboarding backend on
+  `127.0.0.1:8000`.
+- **Caddy** (`/etc/caddy/Caddyfile` on the VM) reverse-proxies
+  `https://chat.<vm-ip-with-dashes>.sslip.io` to `127.0.0.1:8001`, obtaining
+  and renewing its own Let's Encrypt certificate automatically - a second
+  site block alongside the onboarding backend's, no new domain needed.
+- **Secrets** live in `~/fintech-assistant/.env` on the VM (mode `600`,
+  never committed), built from the same variables as `.env.example`. Notable
+  production differences from the Render config in `render.yaml`:
+  `ENABLE_VECTOR_RETRIEVAL=true` (not `false`), and `SECRET_KEY` /
+  `ADMIN_PASSWORD` are VM-specific, generated on deploy rather than reused
+  from Render's.
+- The VM is single-core (`nproc` = 1) and shared with another app, so no
+  extra Gunicorn workers are configured - the Dockerfile's default single
+  worker is deliberate here, not an oversight.
+
+**Redeploying after a code change** - simpler than the onboarding backend's
+recipe because this repo is public, so the VM can `git pull` directly
+instead of needing the source copied over from a dev machine:
+
+```bash
+ssh -i <key> ubuntu@<vm-ip> "cd ~/fintech-assistant \
+  && git pull \
+  && docker build -t fintech-assistant:latest . \
+  && docker stop fintech-assistant && docker rm fintech-assistant \
+  && docker run -d --name fintech-assistant --restart=always \
+       -p 127.0.0.1:8001:5000 --env-file ~/fintech-assistant/.env \
+       fintech-assistant:latest"
+```
+
+If `database/schema.sql` or the Supabase `match_chunks` RPC changed, apply
+those in the Supabase SQL editor first - this repo's deploy step never
+touches Supabase itself.
