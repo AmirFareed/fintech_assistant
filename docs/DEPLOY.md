@@ -16,9 +16,12 @@ served over **HTTPS** (browsers block http calls from an https page) and must al
 images on OCI also ship iptables rules that block them, so on the VM:
 
 ```bash
-sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80  -j ACCEPT
-sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
+# Insert the rules just above the image's REJECT rule (its position varies by image)
+POS=$(sudo iptables -L INPUT --line-numbers -n | awk '/REJECT/{print $1; exit}')
+sudo iptables -I INPUT $POS -m state --state NEW -p tcp --dport 443 -j ACCEPT
+sudo iptables -I INPUT $POS -m state --state NEW -p tcp --dport 80  -j ACCEPT
 sudo netfilter-persistent save
+sudo iptables -L INPUT -n --line-numbers   # 80/443 must be listed BEFORE the REJECT line
 ```
 
 Do **not** open 5432 or 8001; the database has no published port and the backend only listens on localhost.
