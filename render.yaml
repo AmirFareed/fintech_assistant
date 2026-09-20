@@ -11,3 +11,11 @@ services:
       # Public HTTPS URL of the backend, no trailing slash, e.g. https://chat.1-2-3-4.sslip.io
       - key: API_BASE_URL
         sync: false
+    # Short admin URL: /admin -> login page (which forwards to the dashboard when already signed in)
+    routes:
+      - type: redirect
+        source: /admin
+        destination: /admin/login.html
+      - type: redirect
+        source: /admin/
+        destination: /admin/login.html
