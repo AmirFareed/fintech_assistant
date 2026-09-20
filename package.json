@@ -1,5 +1,14 @@
 {
-  "devDependencies": {
-    "tailwindcss": "^4.2.2"
+  "name": "fintech-assistant",
+  "private": true,
+  "scripts": {
+    "setup": "node scripts/dev.js setup",
+    "dev": "node scripts/dev.js",
+    "start": "node scripts/dev.js --open",
+    "dev:backend": "node scripts/dev.js backend",
+    "dev:frontend": "node scripts/dev.js frontend",
+    "db:up": "docker compose up -d db",
+    "db:init": "node scripts/dev.js db-init",
+    "db:seed": "node scripts/dev.js db-seed"
   }
 }

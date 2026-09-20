@@ -1,13 +1,48 @@
 services:
-  fintech-assistant:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: fintech-assistant
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: fintech-assistant-db
+    environment:
+      POSTGRES_USER: fintech
+      POSTGRES_PASSWORD: fintech
+      POSTGRES_DB: fintech
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Applied automatically the first time the data volume is created.
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fintech -d fintech"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    container_name: fintech-assistant-backend
     env_file:
-      - .env
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgresql://fintech:fintech@db:5432/fintech
     ports:
       - "5000:5000"
     volumes:
-      - ./uploads:/app/uploads
+      - ./backend/uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: fintech-assistant-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pgdata:

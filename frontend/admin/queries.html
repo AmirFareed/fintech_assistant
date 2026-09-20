@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Queries — FinTech Admin Panel</title>
+<link rel="icon" type="image/png" href="../assets/fintech-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/chat.css">
+<link rel="stylesheet" href="../assets/admin.css">
+</head>
+<body data-page="queries" data-title="User Queries">
+<template id="page-content">
+<div class="admin-card">
+  <div class="filter-bar">
+    <select id="intentFilter"><option value="">All Intents</option></select>
+    <select id="resultFilter">
+      <option value="">All Results</option>
+      <option value="found">Answer Found</option>
+      <option value="not_found">No Answer</option>
+    </select>
+    <span class="filter-count" id="filterCount"></span>
+  </div>
+
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr>
+        <th>Query</th><th>Intent</th><th>Service</th><th>Lang</th><th>Result</th><th>ms</th><th>Time</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <div id="pager"></div>
+</div>
+</template>
+<script src="../config.js"></script>
+<script src="admin.js"></script>
+<script>
+(function () {
+  if (!Admin.mounted) return;
+  const { esc, truncate, fmtTime, resultBadge } = Admin;
+  const $ = (id) => document.getElementById(id);
+  const state = { page: 1 };
+  let intentsLoaded = false;
+
+  async function load() {
+    const params = new URLSearchParams({ page: state.page, intent: $("intentFilter").value, result: $("resultFilter").value });
+    try {
+      const d = await Admin.api("/api/admin/queries?" + params);
+      if (!intentsLoaded) {
+        intentsLoaded = true;
+        $("intentFilter").insertAdjacentHTML("beforeend", d.intents.map((i) => '<option value="' + esc(i) + '">' + esc(i) + "</option>").join(""));
+      }
+      $("filterCount").textContent = d.total + " record" + (d.total === 1 ? "" : "s");
+      $("rows").innerHTML = d.rows.length ? d.rows.map((r) =>
+        '<tr><td class="td-query">' + esc(truncate(r.query_text, 80)) + '</td>' +
+        '<td><span class="intent-chip">' + esc(r.intent || "—") + '</span></td>' +
+        '<td class="td-muted">' + esc(r.service || "—") + '</td>' +
+        '<td class="td-muted">' + esc(r.response_language || "—") + '</td>' +
+        '<td>' + resultBadge(r.had_result) + '</td>' +
+        '<td class="td-muted">' + esc(r.response_time_ms || "—") + '</td>' +
+        '<td class="td-muted">' + esc(fmtTime(r.created_at)) + '</td></tr>').join("")
+        : '<tr><td colspan="7" class="empty-state">No queries found.</td></tr>';
+      $("pager").innerHTML = Admin.pagination(d.page, d.total_pages);
+    } catch (e) {
+      $("rows").innerHTML = '<tr><td colspan="7" class="empty-state">' + esc(e.message) + "</td></tr>";
+    }
+  }
+
+  ["intentFilter", "resultFilter"].forEach((id) => $(id).addEventListener("change", () => { state.page = 1; load(); }));
+  $("pager").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-page]");
+    if (btn) { state.page = Number(btn.dataset.page); load(); }
+  });
+  load();
+})();
+</script>
+</body>
+</html>

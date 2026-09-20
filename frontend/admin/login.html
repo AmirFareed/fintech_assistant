@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — FinTech</title>
+<link rel="icon" type="image/png" href="../assets/fintech-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/admin.css">
+</head>
+<body class="login-page" data-page="login">
+
+<div class="login-bg-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<div class="login-shell">
+  <div class="login-card">
+
+    <div class="login-top-accent"></div>
+
+    <div class="login-brand">
+      <div class="login-logo-wrap">
+        <img src="../assets/fintech-logo.png" alt="FinTech logo" class="login-logo">
+      </div>
+      <div>
+        <span class="login-brand-name">FinTech Admin</span>
+        <span class="login-brand-sub">Secure Access Only</span>
+      </div>
+    </div>
+
+    <div class="login-divider"></div>
+
+    <div class="login-heading-wrap">
+      <div class="login-lock-icon">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <div>
+        <h2 class="login-title">Sign in to Admin Panel</h2>
+        <p class="login-sub">Enter your credentials to access the dashboard.</p>
+      </div>
+    </div>
+
+    <div class="login-error" id="loginError" hidden>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="loginErrorText"></span>
+    </div>
+
+    <form id="loginForm" class="login-form">
+      <div class="login-field">
+        <label for="username">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Username
+        </label>
+        <input type="text" id="username" name="username" placeholder="admin" required autocomplete="username">
+      </div>
+      <div class="login-field">
+        <label for="password">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Password
+        </label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="login-btn" id="loginBtn">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Sign In
+      </button>
+    </form>
+
+    <div class="login-footer-note">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Protected by FinTech Unit security
+    </div>
+
+  </div>
+</div>
+<script src="../config.js"></script>
+<script src="admin.js"></script>
+<script>
+if (Admin.getToken()) window.location.replace("dashboard.html");
+
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById("loginBtn");
+  const errBox = document.getElementById("loginError");
+  errBox.hidden = true;
+  btn.disabled = true;
+  try {
+    const data = await Admin.api("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      noAuthRedirect: true,
+      body: JSON.stringify({
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+      }),
+    });
+    Admin.setToken(data.token);
+    window.location.href = "dashboard.html";
+  } catch (err) {
+    document.getElementById("loginErrorText").textContent = err.message === "Failed to fetch" ? "Cannot reach the server." : err.message;
+    errBox.hidden = false;
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

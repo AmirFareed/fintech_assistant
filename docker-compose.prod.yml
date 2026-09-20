@@ -1,0 +1,49 @@
+# Production stack for the Oracle Cloud VM: PostgreSQL (pgvector) + backend API.
+# The frontend is hosted separately (Render static site); Caddy on the VM terminates HTTPS
+# and proxies to 127.0.0.1:8001. See docs/DEPLOY.md.
+#
+# Needs a .env next to this file containing POSTGRES_PASSWORD, and backend/.env with the
+# application settings (copy backend/.env.example).
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: fintech-db
+    environment:
+      POSTGRES_USER: fintech
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: fintech
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Applied automatically the first time the data volume is created.
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fintech -d fintech"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    # No published ports: only the backend container can reach the database.
+
+  backend:
+    build: ./backend
+    container_name: fintech-assistant
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgresql://fintech:${POSTGRES_PASSWORD}@db:5432/fintech
+      TRUST_PROXY: "true"
+    ports:
+      - "127.0.0.1:8001:5000"   # Caddy proxies to this; not reachable from the internet directly
+    volumes:
+      - uploads:/app/uploads               # original knowledge-base files
+      - hf_cache:/root/.cache/huggingface  # embedding model, so it isn't re-downloaded on rebuild
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  pgdata:
+  uploads:
+  hf_cache:

@@ -1,0 +1,34 @@
+app:
+  port: 5000
+  secret_key: dev-secret-key
+  upload_folder: uploads
+  allowed_origins: "*"
+
+admin:
+  username: admin
+  password: changeme123
+
+database:
+  url: postgresql://fintech:fintech@localhost:5432/fintech
+  pool_max: 5
+  timeout_seconds: 10
+  file_storage_dir: uploads/knowledge_base
+
+chunking:
+  size: 1000
+  overlap: 150
+
+embeddings:
+  model: BAAI/bge-small-en-v1.5
+
+retrieval:
+  enable_vector: true
+  match_count: 6
+
+llm:
+  provider: auto
+  groq_model: openai/gpt-oss-120b
+  qehwa_model: junaid008/qehwa-pashto-llm
+  qehwa_device: auto
+  max_new_tokens: 300
+  temperature: 0.3
