@@ -28,6 +28,8 @@ retrieval:
 llm:
   provider: auto
   groq_model: openai/gpt-oss-120b
+  openai_base_url: https://generativelanguage.googleapis.com/v1beta/openai/
+  openai_model: gemini-3.8-flash
   qehwa_model: junaid008/qehwa-pashto-llm
   qehwa_device: auto
   max_new_tokens: 300

@@ -1,8 +1,10 @@
 from groq import Groq
+from openai import OpenAI
 
 from utils.config import Config
 
 GROQ_MODEL = Config.GROQ_MODEL
+OPENAI_MODEL = Config.OPENAI_MODEL
 LLM_PROVIDER = Config.LLM_PROVIDER
 QEHWA_MODEL_ID = Config.QEHWA_MODEL_ID
 QEHWA_DEVICE = Config.QEHWA_DEVICE
@@ -19,6 +21,11 @@ QEHWA_TEMPLATE = """Below is an instruction in Pashto or English. Write a detail
 """
 
 _groq_client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
+_openai_client = (
+    OpenAI(api_key=Config.OPENAI_API_KEY, base_url=Config.OPENAI_BASE_URL or None)
+    if Config.OPENAI_API_KEY
+    else None
+)
 _qehwa_runtime = None
 
 _EMPTY_USAGE = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
@@ -29,8 +36,10 @@ def _has_groq_credentials() -> bool:
 
 
 def _select_provider(target_language: str) -> str:
-    if LLM_PROVIDER in {"groq", "qehwa"}:
+    if LLM_PROVIDER in {"groq", "openai", "qehwa"}:
         return LLM_PROVIDER
+    if _openai_client is not None:
+        return "openai"
     if _has_groq_credentials():
         return "groq"
     return "qehwa" if target_language == "ps" else "groq"
@@ -43,17 +52,31 @@ def _generate_with_groq(
 ) -> tuple[str, dict]:
     if _groq_client is None:
         raise RuntimeError("GROQ_API_KEY must be configured when using the Groq provider.")
+    return _chat_completion(_groq_client, GROQ_MODEL, system_prompt, user_query, history)
+
+
+def _generate_with_openai(
+    system_prompt: str,
+    user_query: str,
+    history: list[dict] | None = None,
+) -> tuple[str, dict]:
+    if _openai_client is None:
+        raise RuntimeError("OPENAI_API_KEY must be configured when using the openai provider.")
+    return _chat_completion(_openai_client, OPENAI_MODEL, system_prompt, user_query, history)
+
+
+def _chat_completion(client, model, system_prompt, user_query, history) -> tuple[str, dict]:
     messages = [{"role": "system", "content": system_prompt}]
     if history:
         messages.extend(history)
     messages.append({"role": "user", "content": user_query})
 
-    response = _groq_client.chat.completions.create(
-        model=GROQ_MODEL,
+    response = client.chat.completions.create(
+        model=model,
         messages=messages,
         temperature=0.3,
     )
-    text = response.choices[0].message.content.strip()
+    text = (response.choices[0].message.content or "").strip()
     usage = _EMPTY_USAGE.copy()
     if response.usage:
         usage = {
@@ -150,6 +173,8 @@ def generate_response(
     provider = _select_provider(target_language)
 
     try:
+        if provider == "openai":
+            return _generate_with_openai(system_prompt, user_query, history=history)
         if provider == "groq":
             return _generate_with_groq(system_prompt, user_query, history=history)
         # Qehwa: flatten history into prompt (no native multi-turn support)

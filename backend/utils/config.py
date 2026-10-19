@@ -76,6 +76,13 @@ class Config:
     LLM_PROVIDER = os.getenv("LLM_PROVIDER", _value(_CONFIG, "llm", "provider", "auto")).strip().lower()
     GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
     GROQ_MODEL = os.getenv("GROQ_MODEL", _value(_CONFIG, "llm", "groq_model", "openai/gpt-oss-120b"))
+    # Any OpenAI-compatible API (e.g. Google Gemini), used when LLM_PROVIDER=openai
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
+    OPENAI_BASE_URL = os.getenv(
+        "OPENAI_BASE_URL",
+        _value(_CONFIG, "llm", "openai_base_url", "https://generativelanguage.googleapis.com/v1beta/openai/"),
+    ).strip()
+    OPENAI_MODEL = os.getenv("OPENAI_MODEL", _value(_CONFIG, "llm", "openai_model", "gemini-3.8-flash"))
     QEHWA_MODEL_ID = os.getenv(
         "QEHWA_MODEL_ID", _value(_CONFIG, "llm", "qehwa_model", "junaid008/qehwa-pashto-llm")
     )
